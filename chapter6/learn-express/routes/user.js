@@ -4,7 +4,8 @@ const router = express.Router();
 
 //GET /user 라우터
 router.get('/', (req, res) => {
-    res.send('Hello User');
+  res.locals.title = 'Express'
+  res.render('main');
 });
 router.get('/:id', function(req, res){
     res.send('Hello ju');

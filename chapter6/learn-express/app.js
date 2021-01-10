@@ -15,6 +15,10 @@ const app = express();
 app.set('port', process.env.PORT || 3000); 
 // app.set은 서버에 포트라는 속성을 3000으로 넣는다.
 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+
 app.use(morgan('dev'));
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(express.json());
