@@ -40,12 +40,18 @@ app.use('/user', userRouter);
 app.use('user/:id', userRouter);
 
 app.use((req, res, next) => {
-    res.status(404).send('Not Found');
+  const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+  error.status = 404;
+  next(error);
 });
 
 app.use( (err, req, res, next) => { //에러 미들웨어는 반드시 4가지 매개변수를 입력해야한다.
-    console.log(err);
-    res.status(500).send(err.message); // res.status()는 에러처리할때 에러번호를 커스터마이징 할수있다.
+    res.locals.message = err.message;
+    res.locals.error = process.env.NODE_ENV !== 'production' ? err : {}; //process.env.NODE_ENV가 production이 아닐때 에러스택 표시
+    res.status(err.status || 500);
+    res.render('error');
+    //console.log(err);
+    //res.status(500).send(err.message); // res.status()는 에러처리할때 에러번호를 커스터마이징 할수있다.
 });
 
 app.listen(app.get('port'), () => {
