@@ -167,6 +167,48 @@
 
 ---
 
+6. 템플릿 엔진
+
+    HTML의 정적인 단점을 개선
+    * 반복문, 조건문, 변수 등을 사용할 수 있음
+    * 동적인 페이지 작성 가능
+    * PHP, JSP와 유사함
+
+    PUG
+    html문법과 비슷하지만 닫는 태그가 없고 들여쓰기로 줄바꿈을 처리한다.
+    ```
+    doctype html
+    html
+    head
+        title= title
+        
+    body
+        block content1
+        block content
+    ```
+---
+
+7. 에러 처리 미들웨어
+
+    ```js
+    app.use((req, res, next) => {
+    const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+    error.status = 404;
+    next(error);
+    });
+
+    app.use( (err, req, res, next) => { //에러 미들웨어는 반드시 4가지 매개변수를 입력해야한다.
+        res.locals.message = err.message;
+        res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
+        res.status(err.status || 500);
+        res.render('error');
+        //console.log(err);
+        //res.status(500).send(err.message); // res.status()는 에러처리할때 에러번호를 커스터마이징 할수있다.
+    });
+    ```
+    이 코드는 만약 404 에러가 발생시 res,locals.message는 `${req.method} ${req.url} 라우터가 없습니다.`가 됩니다. next(error)에서 넘겨준 인수가 에러처리 미들웨어의 err로 연결되기 때문입니다.
+---
+
 
 
 
