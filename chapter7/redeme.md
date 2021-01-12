@@ -269,7 +269,113 @@
     ```
 ---
 
+4. 모델 정의하기
 
+    시퀄라이즈는 기본적으로 모델이름은 단수형 테이블 이름은 복수형을 사요한다.
+
+    > models/user.js
+    ```js
+    const Sequelize = require('sequelize');
+
+    module.exports = class User extends Sequelize.Model {
+    static init(sequelize) {
+            return super.init({
+                name: {
+                    type: Sequelize.STRING(20),
+                    allowNull: false,
+                    unique: true,
+                },
+                age: {
+                    type: Sequelize.INTEGER.UNSIGNED,
+                    allowNull: false,
+                },
+                married: {
+                    type: Sequelize.BOOLEAN,
+                    allowNull: false,
+                },
+                comment: {
+                    type: Sequelize.TEXT,
+                    allowNull: true,
+                },
+                created_at: {
+                    type: Sequelize.DATE,
+                    allowNull: false,
+                    defaultValue: Sequelize.NOW,
+                },
+            }, {
+                sequelize,
+                timestamps: false,
+                underscored: false,
+                modelName: 'User',
+                tableName: 'users',
+                paranoid: false,
+                charset: 'utf8',
+                coolate: 'utf8_general_ci',
+            });
+        }
+        static associate(db) {
+            db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
+        }
+    };
+    ```
+    > models/comment.js
+    ```js
+    const Sequelize = require('sequelize');
+
+    module.exports = class Comment extends Sequelize.Model {
+        static init(sequelize){
+            return super.init({
+                comment: {
+                    type: Sequelize.STRING(100),
+                    allowNull: false,
+                },
+                created_at: {
+                    type: Sequelize.DATE,
+                    allowNull: false,
+                    defaultValue: Sequelize.NOW,
+                },
+            }, {
+                sequelize,
+                timestamps: false,
+                modelName: 'Comment',
+                tableName: 'comments',
+                paranoid: false,
+                charset: 'utf8mb4',
+                collate: 'utf8mb4_general_ci',
+            });
+        }
+        static associate(db){
+            db.Comment.belongsTo(db.User, { foreignKey: 'commenter', targetKey: 'id' });
+        }
+    };
+    ```
+
+    모델은 크게 init 메서드와 static associate 메서드로 나뉜다.  
+    1. super.init : 테이블에 대한 설정
+    * 첫번째 인수는 테이블 컬럼에 대한 설정, 두번째 인수는 테이블 자체에 대한 설정이다.
+    * 시퀄라이즈는 알아서 id를 기본키로 연결하므로 id 컬럼은 따로 적어줄 필요는 없다. MYSQL 테이블과 컬럼이 정확히 일치해야 정확하게 대응된다.  
+    * 시퀄라이즈의 자료형은 MYSQL 자료형과는 조금 다르다.
+       | <span style="color:orange">MySQL</sapn> | <span style="color:orange">시퀄라이즈</sapn> |
+       | --- | --- |
+       | VARCHAR(100) | STRING(100) | 
+       | INT | INTEGER | 
+       | TINYINT | BOOLEAN | 
+       | DATETIME | DATE | 
+       | INT UNSIGNED | INTEGER UNSIGNED | 
+       | NOT NULL | allowNull : false | 
+       | UNIQUE | unique: true | 
+       | DEFAULT now() | dafaultValue: Sequelize.NOW |
+    * 두번째 인수는 테이블 옵션
+      * sequelize : static init 메서드의 매개변수와 연결되는 옵션 db.sequelize 객체를 넣어야 합니다
+      * timestamps : true면 시퀄라이즈가 createdAt, updateAt 컬럼을 추가한다 false는 반대의 의미
+      * underscored : 시퀄라이즈는 기본적으로 테이블명과 컬럼명을 캐멀 케이스로 만든다. 이를 스네이크 케이스로 바꾸는 옵션이다.
+      * modelName : 모델이름을 설정할 수 있다. 노드 프로젝트에서 사용
+      * tableName : 실제 데이터베이스의 테이블 이름이 된다. 기본적으로 모델은 단수 테이블은 복수형으로 만든다.
+      * paranoid : true로 설정하면 deleteAt 컬럼이 생성 로우가 지워질때 완전히 지워지는게 아니라 지운 시각이 기록된다. 
+      * cahrset, collate : 인코딩 설정
+
+    * associate : 다른 모델과의 관계를 적는다.
+      * 1 : N 관계 : hasMany, belongTo 라는 메서드로 표현 다른 테이블에 담아줄 정보를 가지고 있는 테이블에 hasMany 다른테이블의 정보를 담아줄 테이블에는 belongTo 메서드를 사용하면 된다.
 
 
 
