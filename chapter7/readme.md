@@ -375,7 +375,210 @@
       * cahrset, collate : 인코딩 설정
 
     * associate : 다른 모델과의 관계를 적는다.
-      * 1 : N 관계 : hasMany, belongTo 라는 메서드로 표현 다른 테이블에 담아줄 정보를 가지고 있는 테이블에 hasMany 다른테이블의 정보를 담아줄 테이블에는 belongTo 메서드를 사용하면 된다.
+      * 1 : N 관계 : hasMany, belongsTo 라는 메서드로 표현 다른 테이블에 담아줄 정보를 가지고 있는 테이블에 hasMany 다른테이블의 정보를 담아줄 테이블에는 belongsTo 메서드를 사용하면 된다. belongsTo가 있는 테이블에 컬럼이 생김
+        ```js
+        static associate(db) {
+        db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
+        }
+        ```
+        ```js
+        static associate(db){
+        db.Comment.belongsTo(db.User, { foreignKey: 'commenter', targetKey: 'id' });
+        }
+        ```
+          * foreignKey : 외래키 
+          * sourceKey : 다른 테이블에서 참조하고있는 키
+          * targetKey : 다른 테이블에서 참조 할 키
+      * 1 : 1 관계 : hasOne 메서드를 사용 
+        * 예시
+        ```js
+        db.User.hasOne(db.Info, { foreignKey: 'UserId', sourceKey: 'id' });
+        db.Info.belongsTo(db.User, { foreignKey: 'UserId', targetKey: 'id' });
+        ```
+        * foreignKey를 생성할 테이블을 belongsTo 메서드를 이용한다.
+      * N : M 관계 : belongsToMany 메서드를 이용
+        * 다대다 관계는 DB특성상 중간 테이블이 생성된다.
+        ```js
+        db.Post.belongsToMany(db.Hashtag, { through: 'Posthashtag' });
+        db.Hashtag.belongsToMany(db.Post, { through: 'Posthashtag' });
+        ```
+        * 다대다 관계를 가지는 모든 테이블에 belongsToMany 메서드를 사용하며 through 로 중간 테이블을 만들어준다.
+
+---
+
+5. 시퀄라이즈 쿼리
+
+    쿼리는 프로미스를 반환하므로 then을 붙여 결과값을 받을 수 있다. 또는 async/await 문법을 같이 사용할 수 있다.
+    > 데이터 생성  
+
+    SQL
+    ```
+    insert into nodejs.users ( name, age, married, comment ) values ('hanjuren', 25, '0', '자기소개1');
+    ```
+    Sequelize
+    ```js
+    const { User } = require('sequelize');
+    User.create({
+        name: 'hanjure',
+        age: 25,
+        married: false,
+        comment: '자기소개1',
+    });
+    ```
+    > 데이터 조회  
+
+    1. 모든 데이터 조회 **findAll** 메서드 이용.
+
+    ```js
+    select * from nodejs.users; //sql
+    User.findAll({}); //sequelize
+    ```
+
+    2. 테이블의 데이터 하나만 가져오기 **findOne** 메서드 이용.
+
+    ```js
+    select * from nodejs.users limit 1; // sql
+    User.findOne({}); // sequelize
+    ```
+
+    3. 원하는 컬럼만 가져오기 **attributes** 메서드 이용.
+
+    ```js
+    select name, married from nodejs.users; // sql
+    User.findAll({ // sequelize
+        attributes: ['name', 'married'],
+    }); 
+    ```
+
+    4. where 조건 나열 옵션
+
+    ```js 
+    select name, married from nodejs.users where married = 1 and age > 30; // sql
+    const { Op } = require('sequelize'); // sequelize
+    ...
+    User.findAll({ 
+        attributes: ['name', 'married'],
+        where: {
+            married: true,
+            age: { [Op.gt]: 30 },
+        },
+    });
+    ```
+    시퀄라이즈의 연산자 Op객체
+    * OP.gt : 초과 ' > '
+    * Op.gte : 이상 ' >= '
+    * Op.lt : 미만 ' < '
+    * Op.lte : 이하 ' <= '
+    * Op.ne : 같지않음 ' != '
+    * Op.or : 또는
+    * Op.in : 배열 요소 중 하나
+    * Op.notIn : 배열 요소와 모두 다름
+    
+    Op.or 예제
+    ```js
+    select id, name from users where married = 0 or age > 30; //sql
+    const { Op } = require('sequelize');
+    ...
+    User.findAll({ // sequelize
+        attributes: ['id', 'name'],
+        where: {
+            // Op.or 속성에 OR 연산할 쿼리들을 배열로 나열
+            [Op.or]: [ { married: false }, { age: { [Op.gt]: 30 } }], 
+        },
+    });
+    ```
+
+    5. order 옵션
+
+    ```js
+    select id, name from users order by age desc; // sql
+    User.findAll({ // sequelize
+        attributes: ['id', 'name'],
+        order: [['age', 'desc']],
+    });
+    ```
+
+    6. limit, orrset 옵션
+
+    ```js
+    select id, name from users order by age desc limit 1 offset 1; // sql
+    user.fidnAll({
+        attribute: ['id', 'name'],
+        order: [['age', 'desc']],
+        limit: 1,
+        offset: 1,
+    });
+    ```
+
+    7. 로우 수정
+
+    ```js
+    update nodejs.users set comment = '바꿀내용' where id = '2'; //sql
+    User.update({ // sequelize
+        comment: '바꿀내용', // 첫번째 인수는 수정 내용
+    }, {
+        where: {id: 2}, // 두번째 인수는 수정할 로우의 조건
+    });
+    ```
+
+    8. 로우 삭제
+
+    ```js
+    delete from nodejs.users where id = 2; //sql
+    User.destory({ // sequelize
+        where: {id: 2},
+    });
+    ```
+---
+
+6. 관계 쿼리
+
+
+    include 속성
+    ```js
+    const user = await User.findOne({
+        include: [{
+            model: Comment,
+        }]
+    });
+    console.log(user.Comments); // 사용자 댓글
+    ```
+    어떤 모델과 관계가 있는지를 include에 넣어준다. include속성을 사용하는 방법 외에는 get+모델 방식이 있다.
+    ```js
+    const user = await User.findOne({});
+    const comments = await user.getComments();
+    console.log(comments); // 사용자 댓글
+    ```
+    관계가 설정되어있으면 getCommetns(조회), setComments(수정), addComment(하나 생성), addComments(여러개 생성), removeComments(삭제)를 지원한다. 동사 + 모델명 형식이다.
+
+    include나 관계 쿼리 메서드에도 where, attributes를 적용할 수 있다.
+    ```js
+    const user = await User.findAll({
+        include: [{
+            model: Comment,
+            where: {
+                id: 1,
+            },
+            attributes: ['id'],
+        }]
+    });
+
+    또는
+
+    const comments = await user.getComments({
+        where: {
+            id: 1,
+        },
+        attributes: ['id'],
+    });
+    ```
+---
+
+7. 쿼리 수행하기
+
+    
+
+
 
 
 
