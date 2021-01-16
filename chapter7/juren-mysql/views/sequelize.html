@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시퀄라이즈 연습하자</title>
+</head>
+<body>
+    <div>
+        <form id="user-form">
+            <fieldset>
+                <legend>사용자 등록하기</legend>
+                <div><input id="username" type="text" placeholder="이름"></div>
+                <div><input id="age" type="number" placeholder="나이"></div>
+                <div><input id="address" type="text" placeholder="주소"></div>
+                <div><input id="married" type="checkbox"><label for="married">결혼여부</label></div>
+                <button type="submit">등록</button>
+            </fieldset>
+        </form>
+    </div>
+    <br>
+    <table id="user-list">
+        <thead>
+            <tr>
+                <th>아이디</th>
+                <th>이름</th>
+                <th>나이</th>
+                <th>주소</th>
+                <th>결혼여부</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{user.id}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.age}}</td>
+                <td>{{user.address}}</td>
+                <td>{{ '기혼' if user.married else '미혼' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/sequelize.js"></script>
+</body>
+</html>
