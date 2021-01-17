@@ -38,7 +38,7 @@
      nodejs
      ```
      - 컬렉션 생성은 따로 할 필요는 없지만 직접 생성하려면 **db.createCollection('컬렉션명')** 으로 생성한다.
-     - 생성한 컬렉션 목록을 확인하려면 **show collections 명령어를 사용한다.
+     - 생성한 컬렉션 목록을 확인하려면 **show collections** 명령어를 사용한다.
      ```
      > show collections
      comments
