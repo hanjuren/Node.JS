@@ -1,4 +1,4 @@
-# Chapter7. MONGO DB
+# Chapter8. MONGO DB
 
 1. 몽고 디비
 
@@ -130,3 +130,363 @@
         { "name" : "juren", "age" : 25 }
         ```
 ---
+4. 몽구스 사용하기
+
+    몽구스는 ODM(Object Document Mapping)이라고 불린다.     
+    
+    몽고 디비 연결
+    > schemas/index.js
+    ```js
+    const mongoose = require('mongoose');
+
+    // 1번
+    const connect = () => {
+        if (process.env.NODE_ENV !== 'production') {
+            mongoose.set('debug', true);
+        }
+    // 2번
+        mongoose.connect('mongodb://root:1210@localhost:27017/admin', {
+            dbName: 'nodejs',
+            useNewUrlParser: true,
+            useCreateIndex: true,
+        }, (error) => {
+            if(error) {
+                console.log('몽고디비 연결 에러', error);
+            } else {
+                console.log('몽고디비 연결 성공');
+            }
+        });
+    };
+
+    //3번
+    mongoose.connection.on('error', (error) => {
+        console.log('몽고디비 연결 에러', error);
+    });
+    mongoose.connection.on('disconnected', () => {
+        console.log('몽고디비 연결이 끊겼습니다. 연결을 재시도 합니다.');
+        connect();
+    });
+
+    module.exports = connect;
+    ```
+    * 1번 : 개발 환경일때만 콘솔을 통해 몽구스가 생성하는 쿼리내용을 확인 할 수 있게 하는 코드
+    * 2번 : 몽구스와 몽고디비를 연결하는 부분
+    * 3번 : 몽구스 커넥션에 이벤트 리스너를 달아두었음 에러발생시 에러 내용을 기록하고 연결 종료시 재연결 시도를 함
+
+    스키마 정의하기
+    > schemas/user.js
+    ```js
+    const mongoose = require('mongoose');
+
+    const { Schema } = mongoose;
+    const userSchema = new Schema({
+        name: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        age: {
+            type: Number,
+            required: true,
+        },
+        married: {
+            type: Boolean,
+            required: true,
+        },
+        comment: String,
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        },
+    });
+
+    module.exports = mongoose.model('User', userSchema);
+    ```
+    > schemas/comment.js
+    ```js
+    const mongoose = require('mongoose');
+
+    const { Schema } = mongoose;
+    const { Types: { ObjectId } } = Schema;
+    const commentSchema = new Schema({
+    commenter: {
+        type: ObjectId,
+        required: true,
+        ref: 'User',
+    },
+    comment: {
+        type: String,
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    });
+
+    module.exports = mongoose.model('Comment', commentSchema);
+    ```
+    * id는 기본으로 생성되므로 id는 따로 적어줄 필요가 없다.
+    * 몽고디비와의 자료형이 조금 다르며 String, Number, Date, Buffer, Boolean, Mixed, ObjectId, Array 등을 값으로 가질 수 있다.
+    * commenter 속성에 자료형이 ObjectId이다. 옵션으로 ref 속성의 값이 User로 되어있는데 이것은 commenter 필드에 User 스키마의 사용자 ObjectId가 들어간다는 의미이다. 몽구스가 JOIN 비슷한 기능을 할때 사용된다.
+
+    쿼리 수행하기
+
+    > public/mongoose.js
+    ```js
+    // 사용자 이름 눌렀을 때 댓글 로딩
+    document.querySelectorAll('#user-list tr').forEach((el) => {
+        el.addEventListener('click', function () {
+        const id = el.querySelector('td').textContent;
+        getComment(id);
+        });
+    });
+    ```
+    * user-list tr 클릭시 td의 id를 가져온다.(id가 첫번째 td라서 가져올수있음.)
+
+    ```js
+    // 사용자 로딩
+    async function getUser() {
+        try {
+        const res = await axios.get('/users'); // user라우터 
+        const users = res.data; // 라우터에서 json데이터를 받아온다.
+        console.log(users); // 가져온 users 확인
+        const tbody = document.querySelector('#user-list tbody');
+        tbody.innerHTML = '';
+        users.map(function (user) {
+            const row = document.createElement('tr');
+            row.addEventListener('click', () => {
+            getComment(user._id);
+            });
+            // 로우 셀 추가
+            let td = document.createElement('td');
+            td.textContent = user._id;
+            row.appendChild(td);
+            td = document.createElement('td');
+            td.textContent = user.name;
+            row.appendChild(td);
+            td = document.createElement('td');
+            td.textContent = user.age;
+            row.appendChild(td);
+            td = document.createElement('td');
+            td.textContent = user.married ? '기혼' : '미혼';
+            row.appendChild(td);
+            tbody.appendChild(row);
+        });
+        } catch (err) {
+        console.error(err);
+        }
+    }
+    // 댓글 로딩
+    async function getComment(id) {
+        try {
+        const res = await axios.get(`/users/${id}/comments`);
+        const comments = res.data;
+        const tbody = document.querySelector('#comment-list tbody');
+        tbody.innerHTML = '';
+        comments.map(function (comment) {
+            // 로우 셀 추가
+            const row = document.createElement('tr');
+            let td = document.createElement('td');
+            td.textContent = comment._id;
+            row.appendChild(td);
+            td = document.createElement('td');
+            td.textContent = comment.commenter.name;
+            row.appendChild(td);
+            td = document.createElement('td');
+            td.textContent = comment.comment;
+            row.appendChild(td);
+            const edit = document.createElement('button');
+            edit.textContent = '수정';
+            edit.addEventListener('click', async () => { // 수정 클릭 시
+            const newComment = prompt('바꿀 내용을 입력하세요');
+            if (!newComment) {
+                return alert('내용을 반드시 입력하셔야 합니다');
+            }
+            try {
+                await axios.patch(`/comments/${comment._id}`, { comment: newComment });
+                getComment(id);
+            } catch (err) {
+                console.error(err);
+            }
+            });
+            const remove = document.createElement('button');
+            remove.textContent = '삭제';
+            remove.addEventListener('click', async () => { // 삭제 클릭 시
+            try {
+                await axios.delete(`/comments/${comment._id}`);
+                getComment(id);
+            } catch (err) {
+                console.error(err);
+            }
+            });
+            // 버튼 추가
+            td = document.createElement('td');
+            td.appendChild(edit);
+            row.appendChild(td);
+            td = document.createElement('td');
+            td.appendChild(remove);
+            row.appendChild(td);
+            tbody.appendChild(row);
+        });
+        } catch (err) {
+        console.error(err);
+        }
+    }
+    // 사용자 등록 시
+    document.getElementById('user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = e.target.username.value;
+        const age = e.target.age.value;
+        const married = e.target.married.checked;
+        if (!name) {
+        return alert('이름을 입력하세요');
+        }
+        if (!age) {
+        return alert('나이를 입력하세요');
+        }
+        try {
+        await axios.post('/users', { name, age, married });
+        getUser();
+        } catch (err) {
+        console.error(err);
+        }
+        e.target.username.value = '';
+        e.target.age.value = '';
+        e.target.married.checked = false;
+    });
+    // 댓글 등록 시
+    document.getElementById('comment-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = e.target.userid.value;
+        const comment = e.target.comment.value;
+        if (!id) {
+        return alert('아이디를 입력하세요');
+        }
+        if (!comment) {
+        return alert('댓글을 입력하세요');
+        }
+        try {
+        await axios.post('/comments', { id, comment });
+        getComment(id);
+        } catch (err) {
+        console.error(err);
+        }
+        e.target.userid.value = '';
+        e.target.comment.value = '';
+    });
+    ```
+    > 라우터 생성
+    ```js
+    //index.js
+    const express = require('express');
+    const User = require('../schemas/user'); //User 스키마를 require
+
+    const router = express.Router();
+
+    router.get('/', async (req, res, next) => { 
+        try {
+            const users = await User.find({}); // 몽고디비의 db.users.find({}) 와 동일.
+            res.render('mongoose', {users}); // 쿼리 결과를 렌더링할때 변수로 넣어준다. 
+        } catch (err) {
+            console.log(err);
+            next(err);
+        }
+    });
+
+    module.exports = router;
+
+    // users.js
+    const express= require('express');
+    const User = require('../schemas/user'); // User 스키마
+    const Comment = require('../schemas/comment'); // Comment 스키마
+
+    const router = express.Router();
+
+    router.route('/') 
+        .get(async (req, res, next) => { 
+            try {
+                const users = await User.find({});
+                res.json(usrs); // 쿼리결과를 json형식으로 반환
+            } catch (err) {
+                console.log(err);
+                next(err);
+            }
+        })
+        .post(async (req, res, next) => {
+            try {
+                const user = await User.create({ // 다큐먼트 생성
+                    name: req.body.name,
+                    age: req.body.age,
+                    married: req.body.married,
+                });
+                console.log(user);
+                res.status(201).json(user);
+            } catch (err) {
+                console.log(err);
+                next(err);
+            }
+        });
+
+    router.get('/:id/comments', async (req, res, next) => {
+        try {
+            const comments = await Comment.find({ commenter: req.params.id }) // 댓글을 단 사용자의 아이디로 먼저 조회한 후
+                .populate('commenter'); // populate 메서드를 이용해 관련이 있는 컬렉션의 다큐먼트를 불러온다.
+            console.log(comments);
+            res.json(comments);
+        } catch (err) {
+            console.log(err);
+            next(err);
+        }
+    });
+
+    module.exports = router;
+
+    // comments.js
+    const express = require('express');
+    const Comment = require('../schemas/comment');
+
+    const router = express.Router();
+
+    router.post('/', async (req, res, next) => {
+        try {
+            const comment = await Comment.create({
+                commenter: req.body.id,
+                comment: req.body.comment,
+            });
+            console.log(comment);
+            const result = await Comment.populate(comment, { path: 'commenter' });
+            res.status(201).json(result);
+        } catch (err) {
+            console.log(err);
+            next(err);
+        }
+    });
+
+    router.route('/:id')
+    .patch(async (req, res, next) => {
+        try {
+        const result = await Comment.update({
+            _id: req.params.id,
+        }, {
+            comment: req.body.comment,
+        });
+        res.json(result);
+        } catch (err) {
+        console.error(err);
+        next(err);
+        }
+    })
+    .delete(async (req, res, next) => {
+        try {
+        const result = await Comment.remove({ _id: req.params.id });
+        res.json(result);
+        } catch (err) {
+        console.error(err);
+        next(err);
+        }
+    });
+
+    module.exports = router;
+    ``` 
+
