@@ -1,4 +1,4 @@
-# Express 서버 만들기
+# Chapter6. Express 서버 만들기
 
 1. express 프로젝트 시작
 
