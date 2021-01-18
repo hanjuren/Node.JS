@@ -1,4 +1,4 @@
-# MYSQL
+# Chapter7. MYSQL
 
 1. 테이블 생성하기
 
