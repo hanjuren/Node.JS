@@ -29,7 +29,7 @@
 |nick|String|false|||
 |password|String|fase||local|
 |snsId|String|true|||
-||||||
+
 * posts  
 게시글 내용과 이미지 저장
 
@@ -38,7 +38,7 @@
 ||type|allowNull|
 |content|String|false|
 |img|String|true|
-||||
+
 * hashtags  
 해시태그 이름 저장(태그로 검색기능 제공)
 
@@ -46,5 +46,5 @@
 |:---:|:---:|:---:|:---:|
 ||type|allowNull|unique|
 |title|String|false|true|
-|||||
+
 
