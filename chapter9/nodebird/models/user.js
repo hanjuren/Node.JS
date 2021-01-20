@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports - class user extends Sequelize.Model{
+module.exports = class User extends Sequelize.Model{
     static init(sequelize) {
         return super.init( {
             email: {
@@ -37,5 +37,17 @@ module.exports - class user extends Sequelize.Model{
         });
     }
 
-    static associate(db) {}
+    static associate(db) {
+        db.User.hasMany(db.Post); // 사용자 테이블 1 : N 게시글 테이블 관계 
+        db.User.belongsToMany(db.User, { // 팔로잉 아이디
+            foreignkey: 'followingId',
+            as: 'Followers',
+            through: 'Follow',
+        });
+        db.User.belongsToMany(db.User, { // 팔로워 아이디
+            foreignkey: 'followerId',
+            as: 'Followings',
+            through: 'Follow',
+        });
+    }
 };
