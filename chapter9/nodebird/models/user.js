@@ -19,7 +19,7 @@ module.exports = class User extends Sequelize.Model{
             provider: {
                 type: Sequelize.STRING(10),
                 allowNull: false,
-                defalutValue: 'local',
+                defaultValue: 'local',
             },
             snsId: {
                 type: Sequelize.STRING(30),
