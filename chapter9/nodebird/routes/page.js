@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.use( (req, res, next) => {
     res.locals.user = req.user;
+    console.log(req.user);
     res.locals.followerCount = 0;
     res.locals.followingCount = 0;
     res.locals.followerIdList = [];

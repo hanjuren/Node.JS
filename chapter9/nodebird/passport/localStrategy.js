@@ -25,7 +25,7 @@ module.exports = () => {
             // done함수 호출 후 passport.authenticate 나머지 실행
         } catch (error) {
             console.log(error);
-            noExtendLeft(error);
+            done(error);
         }
     }));
 };
