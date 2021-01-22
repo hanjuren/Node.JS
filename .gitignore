@@ -2,3 +2,4 @@
 chapter7/learn-sequelize/node_modules/
 chapter7/juren-mysql/node_modules/
 node_modules/
+.env
