@@ -11,14 +11,14 @@ module.exports = () => {
         console.log('kakao profile', profile);
         try {
             const exUser = await User.findOne({     // 기존의 User가 있는지 조회
-                where: { snsId: profile.id, provider: 'naver' },
+                where: { snsId: profile.id, provider: 'kakao' },
             });
             if(exUser) {   // 기존 User의 정보가 있다면 User정보를 done과 호출하고 전략을 종료
                 done(null, exUser);
             } else {  // 기존의 User정보가 없다면 회원가입을 진행
                 const newUser = await User.create({
                     email: profile._json && profile._json.kakao_account_email,
-                    nick: profile.nick,
+                    nick: profile.displayName,
                     snsId: profile.id,
                     provider: 'kakao',
                 });
