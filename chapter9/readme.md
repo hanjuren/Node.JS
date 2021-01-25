@@ -76,3 +76,6 @@ done(null, user) or done(null, false, {message: '실패'})
 1. 서버 에러 (null)
 2. 성공한경우 
 3. 실패할때 메시지
+
+
+multer 패키지로 이미지 업로드.
