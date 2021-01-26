@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const { Post, Hastag } = require('../models');
+const { Post, Hashtag } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
@@ -40,6 +40,22 @@ router.post('/', isLoggedIn, upload.none(), async(req, res, next) => {
             img: req.body.url,
             UserId: req.user.id,
         });
+
+        const hashtags = req.body.content.match(/#[^\s#]*/g); // 정규식
+        // [#노드, #익스프레스] 같은 해시태그 배열을
+        // [노드, 익스프레스]로 #을 뺴서 정렬하고
+        // findOrCreate 값이 있으면 false, 없으면 true반환 하고 생성
+        if(hashtags) {
+            const result = await Promise.all(
+                hashtags.map(tag => {
+                    return Hashtag.findOrCreate({
+                        where: { title: tag.slice(1).toLowerCase() },
+                    })
+                }),
+            );
+            console.log(result);
+            await post.addHashtags(result.map(r => r[0]));
+        }
         res.redirect('/');
     } catch (error) {
         console.error(error);
@@ -51,16 +67,16 @@ router.post('/', isLoggedIn, upload.none(), async(req, res, next) => {
 router.delete('/:id/delete', isLoggedIn, async(req, res, next) => {
     try {
         const expost = await Post.findOne({ where: { id: req.params.id } });
-        if(expost) {
-            const posts = await Post.destroy({where: { id: req.params.id } });
+        if(expost){
+            await Post.destroy({
+                where: { id: req.params.id } 
+            });
         }
-        
-        
+        res.send('succes');    
     } catch (error) {
         console.error(error);
         next(error);
     }
-    res.redirect('/');
 });
 
 

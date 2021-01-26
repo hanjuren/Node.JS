@@ -87,18 +87,16 @@
 
     document.querySelectorAll('.twit-delete').forEach(function(tag) {
       tag.addEventListener('click', function() {
-        
-          const userId = tag.parentNode.querySelector('.twit-id').value;
-          if (userId) {
+          const postId = tag.parentNode.querySelector('.twit-id').value;
+          if (postId) {
             if (confirm('삭제하시겠습니까?')) {
-              axios.delete(`/post/${userId}/delete`)
+              axios.delete(`/post/${postId}/delete`)
                 .then(() => {
                   location.reload();
                 })
                 .catch((err) => {
                   console.error(err);
                 });
-            
           }
         }
       });

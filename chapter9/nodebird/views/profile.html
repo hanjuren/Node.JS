@@ -21,4 +21,14 @@
       {% endif %}
     </div>
   </div>
+  <div class="update-profile">
+    <form name="update-form" action="/user/update" method="post">
+        <div>
+        닉네임 : <input type="text" name="nick" placeholder="새로운 닉네임을 입력하세요." />
+        </div>
+        <div>
+        <button type="submit" class="btn">수정하기</button>
+        </div>
+    </form>
+  </div>
 {% endblock %}
