@@ -7,12 +7,12 @@ const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 
+
 dotenv.config();
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes');
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
-const { ExclusionConstraintError } = require('sequelize/types');
 
 const app = express();
 passportConfig();
@@ -35,7 +35,7 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser(porcess.env.COOKIE_SECRET));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session( {
     resave: false,
     saveUninitialized: false,
