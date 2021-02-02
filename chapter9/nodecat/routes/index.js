@@ -35,9 +35,19 @@ router.get('/mypost', async (req, res, next) => {
   }
 });
 
+router.get('/following', async(req, res, next) => {
+    try{
+        const result = await request(req, '/following');
+        res.json(result.data);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+
 router.get('/follower', async(req, res, next) => {
     try{
-        const result = await request(req, '/follow');
+        const result = await request(req, '/follower');
         res.json(result.data);
     } catch (error) {
         console.log(error);

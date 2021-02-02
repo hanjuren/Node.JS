@@ -6,6 +6,7 @@ const url = require('url');
 const { verifyToken, apiLimiter } = require('./middlewares');
 const { Domain, User, Post, Hashtag } = require('../models');
 const { urlencoded } = require('express');
+const { RSA_NO_PADDING } = require('constants');
 
 const router = express.Router();
 
@@ -82,16 +83,22 @@ router.get('/posts/my', verifyToken, apiLimiter, (req, res)=> {
         });
 });
 
-router.get('/follow', verifyToken, apiLimiter, async(req, res) => {
+router.get('/following', verifyToken, apiLimiter, async(req, res) => {
    try{
        const user = await User.findOne({
-           where : {nick: req.decoded.nick },
+           where : {id: req.decoded.id },
         });
-        const follow = await user.getFollowings();
+        if(!user){
+            return res.status(404).json({
+                code: 404,
+                message: '검색 결과가 없습니다.',
+            });
+        }
+        const following = await user.getFollowings();
            //console.log(user);
            return res.json({
                code: 200,
-               payload: follow,
+               payload: following,
            });
    } catch (error) {
         console.error(error);
@@ -101,6 +108,32 @@ router.get('/follow', verifyToken, apiLimiter, async(req, res) => {
         });
    } 
 });
+
+router.get('/follower', verifyToken, apiLimiter, async(req, res) => {
+    try{
+        const user = await User.findOne({
+            where : {id: req.decoded.id },
+         });
+         if(!user){
+             return res.status(404).json({
+                 code: 404,
+                 message: '검색 결과가 없습니다.',
+             });
+         }
+         const follower = await user.getFollowers();
+            //console.log(user);
+            return res.json({
+                code: 200,
+                payload: follower,
+            });
+    } catch (error) {
+         console.error(error);
+         return res.status(500).json({
+             code: 500,
+             message: '서버 에러',
+         });
+    } 
+ });
 
 router.get('/posts/hashtag/:title', verifyToken, apiLimiter, async(req, res) => {
     try {
