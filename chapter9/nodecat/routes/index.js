@@ -35,6 +35,16 @@ router.get('/mypost', async (req, res, next) => {
   }
 });
 
+router.get('/follower', async(req, res, next) => {
+    try{
+        const result = await request(req, '/follow');
+        res.json(result.data);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+
 router.get('/search/:hashtag', async (req, res, next) => {
   try {
     const result = await request(
@@ -47,6 +57,10 @@ router.get('/search/:hashtag', async (req, res, next) => {
       next(error);
     }
   }
+});
+
+router.get('/', (req, res) => {
+    res.render('main', {key: process.env.CLIENT_SECRET} );
 });
 
 module.exports = router;

@@ -1,11 +1,27 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const url = require('url');
 
 const { verifyToken, apiLimiter } = require('./middlewares');
 const { Domain, User, Post, Hashtag } = require('../models');
+const { urlencoded } = require('express');
 
 const router = express.Router();
 
+router.use( async (req, res, next) => {
+    const domain = await Domain.findOne({
+        where: { host: url.parse(req.get('origin'))?.host },
+    });
+    if (domain) {
+        cors({
+            origin: req.get('origin'),
+            credentials: true,
+        }) (req, res, next);
+    } else {
+        next();
+    }
+});
 
 router.post('/token', apiLimiter, async (req, res) => {
   const { clientSecret } = req.body;
@@ -64,6 +80,26 @@ router.get('/posts/my', verifyToken, apiLimiter, (req, res)=> {
                 message: '서버 에러',
             });
         });
+});
+
+router.get('/follow', verifyToken, apiLimiter, async(req, res) => {
+   try{
+       const user = await User.findOne({
+           where : {nick: req.decoded.nick },
+        });
+        const follow = await user.getFollowings();
+           //console.log(user);
+           return res.json({
+               code: 200,
+               payload: follow,
+           });
+   } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            code: 500,
+            message: '서버 에러',
+        });
+   } 
 });
 
 router.get('/posts/hashtag/:title', verifyToken, apiLimiter, async(req, res) => {
