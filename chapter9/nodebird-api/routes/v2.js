@@ -3,10 +3,9 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const url = require('url');
 
-const { verifyToken, apiLimiter } = require('./middlewares');
+const { verifyToken, apiLimiter, apiLimiter1 } = require('./middlewares');
 const { Domain, User, Post, Hashtag } = require('../models');
-const { urlencoded } = require('express');
-const { RSA_NO_PADDING } = require('constants');
+
 
 const router = express.Router();
 
@@ -14,6 +13,7 @@ router.use( async (req, res, next) => {
     const domain = await Domain.findOne({
         where: { host: url.parse(req.get('origin'))?.host },
     });
+    console.log(domain.type);
     if (domain) {
         cors({
             origin: req.get('origin'),
@@ -24,7 +24,21 @@ router.use( async (req, res, next) => {
     }
 });
 
-router.post('/token', apiLimiter, async (req, res) => {
+router.use( async (req, res, next) => {
+    const domain = await Domain.findOne({
+        where: { host: url.parse(req.get('origin'))?.host },
+    });
+    console.log(domain.type);
+    if (domain.type == 'free') {
+        apiLimiter (req, res, next);
+    } else {
+        apiLimiter1 (req, res, next);
+    }
+});
+
+
+
+router.post('/token', async (req, res) => {
   const { clientSecret } = req.body;
   try {
     const domain = await Domain.findOne({
@@ -43,6 +57,7 @@ router.post('/token', apiLimiter, async (req, res) => {
     const token = jwt.sign({
       id: domain.User.id,
       nick: domain.User.nick,
+      type: domain.type,
     }, process.env.JWT_SECRET, {
       expiresIn: '30m', // 1분
       issuer: 'nodebird',
@@ -61,11 +76,12 @@ router.post('/token', apiLimiter, async (req, res) => {
   }
 });
 
-router.get('/test', verifyToken, apiLimiter, (req, res) => {
+
+router.get('/test', verifyToken, (req, res) => {
   res.json(req.decoded);
 });
 
-router.get('/posts/my', verifyToken, apiLimiter, (req, res)=> {
+router.get('/posts/my', verifyToken,  (req, res)=> {
     Post.findAll({ where: { userId: req.decoded.id } })
         .then((posts) => {
             console.log(posts);
@@ -83,7 +99,7 @@ router.get('/posts/my', verifyToken, apiLimiter, (req, res)=> {
         });
 });
 
-router.get('/following', verifyToken, apiLimiter, async(req, res) => {
+router.get('/following', verifyToken,  async(req, res) => {
    try{
        const user = await User.findOne({
            where : {id: req.decoded.id },
@@ -109,7 +125,7 @@ router.get('/following', verifyToken, apiLimiter, async(req, res) => {
    } 
 });
 
-router.get('/follower', verifyToken, apiLimiter, async(req, res) => {
+router.get('/follower', verifyToken, async(req, res) => {
     try{
         const user = await User.findOne({
             where : {id: req.decoded.id },
@@ -135,7 +151,7 @@ router.get('/follower', verifyToken, apiLimiter, async(req, res) => {
     } 
  });
 
-router.get('/posts/hashtag/:title', verifyToken, apiLimiter, async(req, res) => {
+router.get('/posts/hashtag/:title', verifyToken,  async(req, res) => {
     try {
         const hashtag = await Hashtag.findOne({ where: { title: req.params.title } });
         if(!hashtag) {

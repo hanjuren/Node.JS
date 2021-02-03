@@ -3,6 +3,7 @@ const local = require('./localStrategy');
 const kakao = require('./kakaoStrategy');
 const naver = require('./naverStrategy');
 const User= require('../models/user');
+const  Domain  = require('../models/domain');
 
 module.exports = () => {
     // 로그인시 실행되며 req.seesion 객체에 id를 담는 메서드 매개변수에 user를 받아와서 done에 user.id를 넣어준다
@@ -25,6 +26,9 @@ module.exports = () => {
                 model: User,
                 attributes: ['id', 'nick'],
                 as: 'Followings',
+            }, {
+                model: Domain,
+                attributes: ['type'],
             }], 
         })
             .then(user => done(null, user))

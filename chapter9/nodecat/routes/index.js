@@ -27,7 +27,7 @@ const request = async (req, api) => {
 
 router.get('/mypost', async (req, res, next) => {
   try {
-    const result = await request(req, '/posts/my');
+    const result = await request(req, '/test');
     res.json(result.data);
   } catch (error) {
     console.error(error);

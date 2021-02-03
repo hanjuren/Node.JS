@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const RateLimit = require('express-rate-limit');
+const { User, Domain } = require('../models');
 
 // 로그인 상태를 조회해서 라우터 접근 설정.
 // page라우터에서 사용..
@@ -38,14 +39,29 @@ exports.verifyToken = (req, res, next) =>{
     }
 };
 
-exports.apiLimiter = new RateLimit({
+
+    
+exports.apiLimiter = new RateLimit( {
     windowMs: 60 * 1000, //1분
     max: 5,
     delayMs: 0,
     handler(req, res) {
         res.status(this.statusCode).json({ // 기본 429 사용량을 넘었다라는 의미
             code: this.statusCode,
-            message: '1분에 한번만 요청이 가능합니다.',
+            message: '1분에 5번만 요청이 가능합니다.',
+        });
+    },
+});
+
+
+exports.apiLimiter1 = new RateLimit({
+    windowMs: 60 * 1000, //1분
+    max: 10,
+    delayMs: 0,
+    handler(req, res) {
+        res.status(this.statusCode).json({ // 기본 429 사용량을 넘었다라는 의미
+            code: this.statusCode,
+            message: '1분에 10번만 요청이 가능합니다.',
         });
     },
 });

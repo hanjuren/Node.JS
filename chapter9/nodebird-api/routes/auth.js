@@ -45,6 +45,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                 return next(loginError);
             }
             //로그인 성공
+            
             return res.redirect('/');
         });
     })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 넣어준다.
