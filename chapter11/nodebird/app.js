@@ -11,13 +11,14 @@ dotenv.config();
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth'); 
 const postRouter = require('./routes/post'); 
-const userRouter = require('./routes/user'); 
+const userRouter = require('./routes/user');
+
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
 
 const app = express();
 passportConfig(); //패스포트 설정...
-app.set('port', process.env.PORT || 8001);
+app.set('port', process.env.PORT || 8005);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
     express: app,

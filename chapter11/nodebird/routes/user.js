@@ -2,7 +2,7 @@ const express = require('express');
 
 const { isLoggedIn } = require('./middlewares');
 const User = require('../models/user');
-const { addFollowing, addUnFollowing, profileUpdate } = require('../controllers');
+const { addFollowing, addUnFollowing, profileUpdate } = require('../controllers/user');
 
 const router = express.Router();
 
