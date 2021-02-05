@@ -35,7 +35,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
             return next(authError);
         }
         if(!user) { // 로그인이 실패한 경우
-            return res.redirect(`./?loginError=${info.message}`);
+            return res.redirect(`/?loginError=${info.message}`);
         }
         // req.login(user) 하는 순간 passport/index.js 로 이동
         // index에서 serializeUser done 후 나머지 실행
