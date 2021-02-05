@@ -92,8 +92,8 @@ describe('profileUpdate', () => {
 
     test('DB에서 에러가 발생하면 next(error)을 호출함', async () => {
         const error = '프로필수정 테스트용 에러';
-        User.findOne.mockReturnValue(Promise.reject(error));
-        await addUnFollowing(req, res, next);
+        User.update.mockReturnValue(Promise.reject(error));
+        await profileUpdate(req, res, next);
         expect(next).toBeCalledWith(error);
     });
 });

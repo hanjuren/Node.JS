@@ -4,3 +4,4 @@ chapter7/juren-mysql/node_modules/
 node_modules/
 .env
 uploads/
+coverage/
