@@ -1,7 +1,7 @@
 const request = require("supertest");
 const { sequelize } = require('../models');
 const app = require('../app');
-const naverStrategy = require("../passport/naverStrategy");
+
 
 beforeAll(async () => { // 테스트를 실행하기 전에 실행되는 코드 
     await sequelize.sync(); // 데이터베이스에 테이블 생성

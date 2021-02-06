@@ -37,6 +37,7 @@ describe('isNotLoggedIn', () => {
         };
         isNotLoggedIn(req, res, next);
         const message = encodeURIComponent('로그인한 상태입니다.');
+        console.log(message);
         expect(res.redirect).toBeCalledWith(`/?error=${message}`);
     });
 
