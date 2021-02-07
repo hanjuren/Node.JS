@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
+const ColorHash = require('color-hash');
 
 dotenv.config();
 const webSocket = require('./socket');
@@ -35,6 +36,14 @@ app.use(session({
     },
 }));
 
+app.use((req, res, next) => {
+    if(!req.session.color){
+        const colorHash = new ColorHash();
+        req.session.color = colorHash.hex(req.sessionID);
+    }
+    next();
+});
+
 app.use('/', indexRouter);
 
 app.use((req, res, next) => {
@@ -54,5 +63,5 @@ const server = app.listen(app.get('port'), () =>{
     console.log(app.get('port'), '번 포트에서 대기 중');
 });
 
-webSocket(server);
+webSocket(server, app); // app을 넘기는 이유는 socket.js 에서 app.set('io') 하기 위해서 넘기는것
 
