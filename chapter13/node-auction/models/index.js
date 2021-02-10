@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const User = require('./user');
 const Good = require('./good');
-const auction = require('./aucion');
+const Auction = require('./auction');
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config')[env];
@@ -22,6 +22,6 @@ Auction.init(sequelize);
 
 User.associate(db);
 Good.associate(db);
-Aution.associate(db);
+Auction.associate(db);
 
 module.exports = db;
