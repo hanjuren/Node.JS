@@ -21,6 +21,7 @@ router.get('/', async(req, res, next) => {
             title: 'NodeAuction',
             goods,
         });
+        console.log(goods);
     } catch(error) {
         console.error(error);
         next(error);

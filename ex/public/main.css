@@ -1,0 +1,145 @@
+body { margin: 0; padding: 0; height: 100%; }
+
+.login {
+    width: 30%;
+    height: 100%;
+    display: flex;
+}
+.login form {
+    margin-left: 20%;
+    margin-top: 5%;
+}
+.login input {
+    width: 100px;
+    padding: 8px;
+}
+.input-group { display: flex;}
+.input-group { margin-bottom: 15px; }
+.input-group label { width: 30%; display: inline-block; margin-top: 2%; }
+.input-group input { width: 60%; }
+
+.btn {
+    display: inline-block;
+    padding: 0 5px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+    background: white;
+    border: 1px solid silver;
+    color: crimson;
+    height: 37px;
+    line-height: 37px;
+    vertical-align: top;
+    font-size: 12px;
+    float: right;
+    margin-left: 10px;
+}
+
+.content{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.todobox{  
+    width: 50%;
+    height: 500px;
+    border: 2px solid #E6C5F4;
+    border-radius: 5px;
+    margin-top: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.todobox ul {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.todobox li {
+    width: 70%;
+    margin-top: 3px;
+    font-size: 20px;
+    display: block;
+    cursor: default;
+}
+.btn-chk{
+    width: 15px;
+}
+.content form {
+    margin-top: 30px;
+    width: 500px;
+}
+.content input {
+    padding: 10px;
+    width: 100%;
+    border-right: 0px;
+    border-left: 0px;
+    border-top: 0px;
+    border-bottom: 3px solid #E6C5F4;
+}
+input:focus {
+    outline: none;
+}
+
+.timeline{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+#join-form {
+    width: 50%;
+    margin-top: 10%;
+}
+.btnbox {
+    display: flex;
+    justify-content: center;
+}
+.joinbtn {
+    display: inline-block;
+    padding: 0 5px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+    background: white;
+    border: 1px solid silver;
+    color: crimson;
+    height: 37px;
+    line-height: 37px;
+    vertical-align: top;
+    font-size: 12px;
+}
+.list-btn{
+    float: right;
+    margin-right: 10px;
+    text-decoration: none;
+}
+.logout{
+    float: right;
+    margin-right: 20px;
+    margin-top: 10px;
+    text-decoration: none;
+    color: black;
+}
+.todobox li span {
+    color: #555151;
+    text-decoration: line-through;
+    cursor: default;
+}
+.todobox h1{
+    color: #701d94;
+}
+.list {
+    text-decoration: none;
+    color: #39c90e;
+}
+.success-btn {
+    color: #555151;
+    cursor: default;
+}

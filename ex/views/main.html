@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/main.css">
+    <title>{{title}}</title>
+</head>
+<body>
+    {% if user and user.id %}
+        <div>
+            <a href="auth/logout" class="logout">Log out</a>
+        </div>
+        <div class="content">
+            <div class="todobox">
+                <h1>{{user.name}} 님의 To Do List</h1>
+                {% if todos == false %}
+                할일을 입력해주세요
+                {% else %}
+                <ul>
+                    {% for todo in todos %}
+                    <li>
+                        {% if todo.success == false %}
+                        <a href="/success/{{todo.id}}" id="success" class="list">✔</a>
+                        {{todo.content}}
+                        <a href="/delete/{{todo.id}}" id="delete" class="list-btn">❌</a>
+                        {% else %}
+                        <a class="success-btn">✔</a>
+                        <span>{{todo.content}}</span>
+                        <a href="/delete/{{todo.id}}" id="delete" class="list-btn">❌</a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <form action="/todo" name="todolist" method="post">
+                <input type="text" name="content" placeholder="할 일을 입력하세요.." id="todoin"/>
+            </form>
+        </div>
+    {% else %}
+        <div class="login">
+            <form name="loginform" action="/auth/login" method="post">
+                <div class="input-group">
+                    <label for="uid">아이디</label>
+                    <input type="uid" id="uid" name="uid" required autofocus>
+                  </div>
+                  <div class="input-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" required>
+                  </div>
+                
+                <button id="login" class="btn" type="submit">로그인</button>
+                <a href="/auth/join" id="join" class="btn">회원가입</a>
+            </form>
+        </div>
+    {% endif %}
+</div>
+</div>
+<script>
+    
+    
+
+</script>
+</body>
+</html>
