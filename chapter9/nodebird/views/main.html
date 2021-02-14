@@ -41,6 +41,15 @@
             {% if twit.img %}
               <div class="twit-img"><img src="{{twit.img}}" alt="섬네일"></div>
             {% endif %}
+            
+            {% set like = like.Likers %}
+            {% if user %}
+            <button class="twit-unlike">UnLike💔{{ like }}</button>
+            {% else %}
+            <button class="twit-like">Like❤</button>
+            {%endif%}
+            
+            
           </div>
         {% endfor %}
       </div>
@@ -121,5 +130,20 @@
         }
       });
     });
+
+    // 좋아요 기능 추가
+    document.querySelectorAll('.twit-like').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+          const postId = tag.parentNode.querySelector('.twit-id').value;
+              axios.post(`/post/${postId}/like`)
+                .then(() => {
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+      });
+    });
+    
   </script>
 {% endblock %}

@@ -30,7 +30,7 @@ sequelize.sync( { force: false })
     })
     .catch( (err) => {
         console.log('데이터 베이스 연결 실패 ❌');
-        consolee.log(err);
+        console.log(err);
     })
 
 app.use(morgan('dev'));

@@ -79,5 +79,26 @@ router.delete('/:id/delete', isLoggedIn, async(req, res, next) => {
     }
 });
 
+router.post('/:id/like', async(req, res, next) => {
+    try {
+        const post = await Post.findOne({ where: { id: req.params.id } });
+        if(post) {
+            await post.addLiker(req.user.id);
+            res.send('succes');
+            console.log('좋아요 성공');
+        } else {
+            console.log('좋아요 실패');
+            res.status(404).send('no user');
+        }
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
+
+router.post('/:id/unlike', async(req, res, next) => {
+    
+});
+
 
 module.exports = router;
