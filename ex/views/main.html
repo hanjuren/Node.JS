@@ -9,36 +9,8 @@
 </head>
 <body>
     {% if user and user.id %}
-        <div>
-            <a href="auth/logout" class="logout">Log out</a>
-        </div>
-        <div class="content">
-            <div class="todobox">
-                <h1>{{user.name}} 님의 To Do List</h1>
-                {% if todos == false %}
-                할일을 입력해주세요
-                {% else %}
-                <ul>
-                    {% for todo in todos %}
-                    <li>
-                        {% if todo.success == false %}
-                        <a href="/success/{{todo.id}}" id="success" class="list">✔</a>
-                        {{todo.content}}
-                        <a href="/delete/{{todo.id}}" id="delete" class="list-btn">❌</a>
-                        {% else %}
-                        <a class="success-btn">✔</a>
-                        <span>{{todo.content}}</span>
-                        <a href="/delete/{{todo.id}}" id="delete" class="list-btn">❌</a>
-                        {% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            </div>
-            <form action="/todo" name="todolist" method="post">
-                <input type="text" name="content" placeholder="할 일을 입력하세요.." id="todoin"/>
-            </form>
-        </div>
+        <a href="/todo">TODO LIST</a>
+        <a href="http://localhost:8001">nodebird</a>
     {% else %}
         <div class="login">
             <form name="loginform" action="/auth/login" method="post">
@@ -56,12 +28,5 @@
             </form>
         </div>
     {% endif %}
-</div>
-</div>
-<script>
-    
-    
-
-</script>
 </body>
 </html>

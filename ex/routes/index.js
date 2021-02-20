@@ -10,17 +10,21 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/', async(req, res, next) => {
+    res.render('main');
+});
+
+router.get('/todo', async (req, res, next) => {
     try {
         if(req.user) {
             const todos = await Todo.findAll({ where: { UserId: req.user.id } });
-            res.render('main', {
+            res.render('todo', {
                 title: 'TODOLIST',
                 todos,
             });
             console.log(todos);
         } else {
-            res.render('main');
+            res.render('todo');
         }
         
     } catch (error) {

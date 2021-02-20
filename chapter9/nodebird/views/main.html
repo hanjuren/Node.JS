@@ -42,13 +42,12 @@
               <div class="twit-img"><img src="{{twit.img}}" alt="섬네일"></div>
             {% endif %}
             
-            {% set like = like.Likers %}
-            {% if user %}
-            <button class="twit-unlike">UnLike💔{{ like }}</button>
-            {% else %}
+            {% set like = twit.Likers.includes(id = user.id) %}
+            {% if like %}
+            <button class="twit-unlike">UnLike💔</button>
+            {% else  %}
             <button class="twit-like">Like❤</button>
             {%endif%}
-            
             
           </div>
         {% endfor %}
@@ -58,6 +57,8 @@
 
 {% block script %}
   <script>
+    
+    
     if (document.getElementById('img')) {
       document.getElementById('img').addEventListener('change', function(e) {
         const formData = new FormData();

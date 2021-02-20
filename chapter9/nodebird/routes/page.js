@@ -9,9 +9,7 @@ router.use((req, res, next) => {
     res.locals.followerCount = req.user ? req.user.Followers.length : 0;
     res.locals.followingCount = req.user ? req.user.Followings.length : 0;
     res.locals.followerIdList = req.user ? req.user.Followings.map(f => f.id) : [];
-    res.locals.likelist = req.user && req.like ? req.like.map(f => f.Likers) : [];
-    
-
+    //res.locals.likelist = req.user && req.like ? req.like.map(f => f.Likers) : [];
     next();
   });
 
@@ -38,12 +36,14 @@ router.get('/', async(req, res, next) => {
         });
         const post = JSON.stringify(posts);
         console.log(post);
-        //const like = post.id;
-        //console.log(like);
-        console.log('ㄹ오너ㅣㄹㅁㄴ: ', res.locals.likelist);
+        // const like = post.id;
+        // console.log(like);
+        // console.log('ㄹ오너ㅣㄹㅁㄴ: ', res.locals.likelist);
+        //const like = posts.Likers.map(i=>i.id).includes(user.id);
         res.render('main', {
             title: 'NodeBird',
             twits: posts,
+            
             like: post,
             //like: posts.Likers,
         });   
