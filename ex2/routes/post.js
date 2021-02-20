@@ -8,21 +8,21 @@ const router = express.Router();
 
 
 try {
-    fs.readdirSync('upload');
+    fs.readdirSync('uploads');
 } catch (error) {
     console.error('uploads 폴더가 없어 uploads 폴더를 생성 합니다.');
-    fs.mkdirSync('upload');
+    fs.mkdirSync('uploads');
 }
 
 const upload = multer({
     storage: multer.diskStorage({
         destination(req, file, cb) {
-            cb(null, 'upload/');
+            cb(null, 'uploads/');
         },
         filename(req, file, cb) {
             const ext = path.extname(file.originalname);
             cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
-            cb(null, basename + Date.now() + extention);
+            // cb(null, basename + Date.now() + extention);
         },
     }),
     limits: { fileSize: 5 * 1024 * 1024 },
@@ -41,7 +41,7 @@ router.post('/', upload.none(), async(req, res, next) => {
             img: req.body.url,
             UserId: req.user.id,
         });
-        console.log('게시글 : ', req.body.url)
+        console.log('게시글 : ', post)
         res.redirect('/');
     } catch (error) {
         console.error(error);

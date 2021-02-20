@@ -5,6 +5,10 @@ const passport = require('passport');
 
 const router = express.Router();
 
+router.get('/login', (req, res) => {
+    res.render('login', {title: '로그인'});
+});
+
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', (authError, user, info) => {
         if (authError) { // 서버 에러일경우

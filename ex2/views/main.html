@@ -4,36 +4,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/main.css">
     <title>{{title}}</title>
 </head>
 <body>
-    <h1>블로그 만들기</h1>
-    {% if user and user.id %}
-        <h3>{{user.nick}}님 안녕하세요.</h3>
-        <a href="/post">글쓰기</a>
-        {% for post in posts %}
-            <div>글쓴이 : {{post.User.nick}}</div>
-            <div>제목 : {{post.title}}</div>
-            <div>내용 : {{post.content}}</div>
+    <div class="content">
+        <div class="title">
+            <h1>블로그 만들기</h1>
             
-            <div class="post-img"><img src="{{post.img}}" alt="섬네일"></div>
+            <div class="user">
+                {% if user and user.id %}
+                <a href="#" id="log">Logout</a>
+                <a href="#" id="log">Mypage</a>
+                
+                {%else%}
+                <a href="/auth/login" id="log">Login</a>
+                <a href="#" id="log">Join</a>
+                {%endif%}
+            </div>
+            
+        </div>
+        <div class="postContent">
+        {% for post in posts %}
+            <div class="post">
+                
+                <div class="posttitle">
+                    <span>{{post.User.nick}}</span>
+                    <h2>{{post.title}}</h2>
+                    
+                </div>
+                <img src="{{post.img}}"/>
+                
+                    
+                
+                
+            </div>  
             
         {% endfor %}
-    {% else %}
-    <>
-        <form id="login-form" action="/auth/login" method="post">
-            <div>
-              <label for="uid">아이디</label>
-              <input id="uid" type="text" name="uid" required autofocus>
-            </div>
-            <div>
-              <label for="password">비밀번호</label>
-              <input id="password" type="password" name="password" required>
-            </div>
-            <a id="join" href="/auth/join" class="btn">회원가입</a>
-            <button id="login" type="submit" class="btn">로그인</button>
-          </form>
-    </div>
-    {% endif %}
+        </div>
+    </div>    
 </body>
 </html>

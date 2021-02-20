@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 
+
 module.exports = class Post extends Sequelize.Model{
     static init(sequelize){
         return super.init({
@@ -15,9 +16,14 @@ module.exports = class Post extends Sequelize.Model{
                 type: Sequelize.STRING(200),
                 allowNull: true,
             },
+            created_at: {
+                type: Sequelize.DATE,
+                allowNull: false,
+                defaultValue: Sequelize.NOW,
+            },
         }, {
             sequelize,
-            timestamps: true,
+            timestamps: false,
             underscored: false,
             modelName: 'Post',
             tableName: 'posts',
