@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/main.css">
+    <title>{{title}}</title>
+</head>
+<body>
+    <div class="content">
+        <div class="title">
+            <h1>SNS 만들기</h1>
+            
+            <div class="user">
+                {% if user and user.id %}
+                <a href="#" id="log">Logout</a>
+                <a href="#" id="log">Mypage</a>
+                
+                {%else%}
+                <a href="/auth/login" id="log">Login</a>
+                <a href="#" id="log">Join</a>
+                {%endif%}
+            </div>
+            
+        </div>
+        
+        {% block content %}
+        {% endblock %}
+        fdfsdfsad
+
+    </div>    
+</body>
+</html>

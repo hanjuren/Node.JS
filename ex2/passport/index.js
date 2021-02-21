@@ -2,6 +2,7 @@ const passport = require('passport');
 const local = require('./localStrategy');
 
 const User= require('../models/user');
+const { Post } = require('../models');
 
 module.exports = () => {
     // 로그인시 실행
@@ -13,7 +14,13 @@ module.exports = () => {
     // deserializeUser의 id 매개변수는 serializeUser에서 done에 담았던 두번째 인수가 오게된다.
     // 결과값 done의 user는 req.user로 조회할 수 있다.
     passport.deserializeUser((id, done) => {
-        User.findOne({ where: {id} })
+        User.findOne({ 
+            where: {id},
+            include: {
+                model: Post,
+                where: {UserId : id},
+            },
+        })
             .then(user => done(null, user))
             .catch(err => done(err));
     });

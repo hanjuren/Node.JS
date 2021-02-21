@@ -1,47 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/main.css">
-    <title>{{title}}</title>
-</head>
-<body>
-    <div class="content">
-        <div class="title">
-            <h1>블로그 만들기</h1>
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="mainContent">
+
+    <div class="postContent">
+    {% for post in posts %}
+        <div class="post">
             
-            <div class="user">
-                {% if user and user.id %}
-                <a href="#" id="log">Logout</a>
-                <a href="#" id="log">Mypage</a>
-                
-                {%else%}
-                <a href="/auth/login" id="log">Login</a>
-                <a href="#" id="log">Join</a>
-                {%endif%}
+            <div class="postuser">
+                <span>{{post.User.nick}}</span>
             </div>
-            
-        </div>
-        <div class="postContent">
-        {% for post in posts %}
-            <div class="post">
-                
-                <div class="posttitle">
-                    <span>{{post.User.nick}}</span>
-                    <h2>{{post.title}}</h2>
-                    
-                </div>
+            <div class="imgbox">
+                {% if post.img %}
                 <img src="{{post.img}}"/>
-                
-                    
-                
-                
-            </div>  
-            
-        {% endfor %}
-        </div>
+                {% else %}
+                <p>No Image..</p>
+                {% endif %}
+            </div>
+            <div class="posttitle">
+                <h3>{{post.title}}</h3>
+            </div>
+            <div class="commentbox">
+                <span id="comment">댓글보여주기</span>
+                <span id="comment">댓글보여주기</span>
+            </div>
+        </div>  
+        
+    {% endfor %}
+    </div>
+    {% if user and user.id %}
+    <div class="profile">
+        <span>{{user.nick}}</span>   
+        <span>{{user.Posts.length}}</span>   
     </div>    
-</body>
-</html>
+    {% endif %}
+</div>
+
+
+{% endblock %}
