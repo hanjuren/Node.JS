@@ -6,9 +6,15 @@
     <div class="postContent">
     {% for post in posts %}
         <div class="post">
-            
+            <input type="hidden" value="{{post.User.id}}" class="post-user-id">
+            <input type="hidden" value="{{post.id}}" class="post-id">
             <div class="postuser">
                 <span>{{post.User.nick}}</span>
+                {% if user and user.id and post.User.id === user.id %}
+                <a href="#">삭제하기</a >
+                {% elif user and user.id and post.USer.id !== user.id %} 
+                <a href="#">팔로우하기</a >
+                {% endif %}
             </div>
             <div class="imgbox">
                 {% if post.img %}
@@ -30,11 +36,30 @@
     </div>
     {% if user and user.id %}
     <div class="profile">
-        <span>{{user.nick}}</span>   
-        <span>{{user.Posts.length}}</span>   
-    </div>    
+        <div class="user-profile">
+            <p>{{user.nick}}</p>
+            <a href="#"><i class="fas fa-cog"></i></a>
+        </div>
+        <div class="user-detail">
+            <div class="post-count">
+                <p>My post</p>
+                <sapn>{{postCount}}</sapn>
+            </div>
+            <div class="follow-list">
+                <p>Follower</p>
+                <sapn>0</sapn>
+            </div>
+            <div class="follow-list">
+                <p>Following</p>
+                <sapn>0</sapn>
+            </div>
+        </div> 
+    </div> 
+    
     {% endif %}
 </div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>   
 
 
 {% endblock %}

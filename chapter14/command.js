@@ -127,10 +127,7 @@ program
 
     program
     .action((cmd, args) => {
-        if (!args) {
-            console.log(chalk.bold.red('해당 명령어를 찾을 수 없습니다.'));
-            program.help();
-        } else {
+        if (args !== 'cli') {
             inquirer.prompt([{
                 type: 'list',
                 name: 'type',
@@ -157,6 +154,10 @@ program
                         console.log(chalk.rgb(128, 128, 128)('터미널을 종료합니다.'));
                     }
             });
+        } else {
+            console.log(chalk.bold.red('해당 명령어를 찾을 수 없습니다.'));
+            program.help();
+            
         }
     })
     .parse(process.argv);

@@ -14,9 +14,7 @@
             
             <div class="user">
                 {% if user and user.id %}
-                <a href="#" id="log">Logout</a>
-                <a href="#" id="log">Mypage</a>
-                
+                <a href="/auth/logout" id="log">Logout</a>
                 {%else%}
                 <a href="/auth/login" id="log">Login</a>
                 <a href="#" id="log">Join</a>
@@ -27,8 +25,9 @@
         
         {% block content %}
         {% endblock %}
-        fdfsdfsad
-
-    </div>    
+        
+        
+    </div>
+       
 </body>
 </html>

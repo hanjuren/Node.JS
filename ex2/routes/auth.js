@@ -23,6 +23,7 @@ router.post('/login', (req, res, next) => {
                 console.log(loginError);
                 return next(loginError);
             }
+            
             return res.redirect('/');
         });
     })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 넣어준다.
@@ -52,6 +53,12 @@ router.get('/join', (req, res) => {
     res.render('join', {
         title: '회원가입 - Blog',
     });
+});
+
+router.get('/logout', (req, res) => {
+    req.logout();
+    req.session.destroy();
+    res.redirect('/');
 });
 
 module.exports = router;

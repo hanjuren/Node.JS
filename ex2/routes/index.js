@@ -4,9 +4,20 @@ const Post = require('../models/post');
 
 const router = express.Router();
 
-router.use((req, res, next) => {
+router.use(async(req, res, next) => {
     res.locals.user = req.user;
-    res.locals.postCount = req.user? req.user.Posts.length : 0;
+    try{
+        if(req.user) {
+            let postCount = await Post.findAll({
+                where: {UserId: req.user.id}
+            });
+            res.locals.postCount = postCount.length;
+        } else {
+            res.locals.postCount = 0;
+        }
+    } catch(error) {
+        console.log(error);
+    }
     next();
 });
 
@@ -16,10 +27,11 @@ router.get('/', async(req, res, next) => {
             include: {
                 model: User,
                 attributes: ['id', 'nick'],
+                
             },
+            order: [['id', 'DESC']],
         });
         res.render('main', { title: '블로그', posts } );
-        console.log(req.user);
     } catch(error) {
         console.error(error);
         next(error);

@@ -9,14 +9,23 @@ display: 1;
     height: 80px;
     display: flex;
     justify-content: space-between;
+    position: fixed;
+    z-index: 2;
 }
 .title h1{
     margin-left: 30px;
 }
 .user{
-    height: 100%;
+    width: 10%;
     display: flex;
     padding-top: 20px;
+}
+.user a:first-child {
+    color: #5d5e5b;
+    margin-left: 40px;
+}
+.user a {
+    color: #5d5e5b;
 }
 #log {
     text-decoration: none;
@@ -26,14 +35,19 @@ display: 1;
 .mainContent {
     width: 100%;
     display: flex;
+    flex-direction: column;
+    
+    z-index: 1;
+    padding-bottom: 50px;
 }
 .postContent{
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 60%;
     height: 100%;
     margin-top: 50px;
     align-items: flex-end;
+    z-index: 1;
     
 }
 .post {
@@ -46,15 +60,33 @@ display: 1;
     margin-top: 15px;
 }
 .postuser{
-    height: 30px;
+    height: 40px;
     display: flex;
-    flex-direction: column;
 }
 .postuser span{
+    width: 80%;
     margin-left: 15px;
     margin-top: 10px;
     font-size: 14px;
     font-weight: bold;
+}
+.postuser a {
+    width: 15%;
+    display: inline-block;
+    padding: 0 8px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+    background: white;
+    border: 1px solid #b4b5b5;
+    color: black;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    vertical-align: top;
+    font-size: 12px;
+    margin-top: 5px;
+    
 }
 .imgbox {
     width: 100%;
@@ -87,9 +119,40 @@ img {
     border: 0.1rem solid #b4b5b5;
     border-radius: 4px;
     margin: 65px 2%;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 10%;
 }
-.profile span {
-    margin-left: 15px;
+.user-profile {
+    display: flex;
+    height: 50%;
+    width: 100%;
 }
-
-
+.user-profile p{
+    font-weight: 600;
+    font-size: 18px;
+    margin-left: 25px;
+    width: 80%;
+}
+.user-profile a {
+    font-size: 22px;
+    color: #b4b5b5;
+    margin-top: 15px;
+}
+.user-detail {
+    display: flex;
+    height: 50%;
+    justify-content: space-around;
+    align-content: center;
+    width: 100%;
+}
+.post-count,
+.follow-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.footer {
+    height: 150px;
+}
