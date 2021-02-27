@@ -15,23 +15,7 @@ display: 1;
 .title h1{
     margin-left: 30px;
 }
-.user{
-    width: 10%;
-    display: flex;
-    padding-top: 20px;
-}
-.user a:first-child {
-    color: #5d5e5b;
-    margin-left: 40px;
-}
-.user a {
-    color: #5d5e5b;
-}
-#log {
-    text-decoration: none;
-    margin-right: 20px;
-    font-size: 17px;   
-}
+
 .mainContent {
     width: 100%;
     display: flex;
@@ -70,24 +54,6 @@ display: 1;
     font-size: 14px;
     font-weight: bold;
 }
-.postuser a {
-    width: 15%;
-    display: inline-block;
-    padding: 0 8px;
-    text-decoration: none;
-    cursor: pointer;
-    border-radius: 4px;
-    background: white;
-    border: 1px solid #b4b5b5;
-    color: black;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    vertical-align: top;
-    font-size: 12px;
-    margin-top: 5px;
-    
-}
 .imgbox {
     width: 100%;
     height: 300px;
@@ -101,7 +67,7 @@ img {
     width: 100%;
 }
 .posttitle {
-    height: 100px;
+    height: 35px;
 }
 .posttitle h3 {
     margin-left: 15px;
@@ -109,6 +75,9 @@ img {
 .commentbox {
     display: flex;
     flex-direction: column;
+}
+.commentbox p {
+    margin-left: 15px;
 }
 #comment {
     margin-left: 15px;
@@ -134,11 +103,20 @@ img {
     font-size: 18px;
     margin-left: 25px;
     width: 80%;
+    height: 5px;
 }
 .user-profile a {
     font-size: 22px;
     color: #b4b5b5;
     margin-top: 15px;
+    margin-right: 7px;
+    height: 10px;
+}
+.user-profile a:last-child {
+    margin-right: 25px;
+}
+i:hover{
+    color: black;
 }
 .user-detail {
     display: flex;
@@ -155,4 +133,111 @@ img {
 }
 .footer {
     height: 150px;
+}
+.loginform {
+    width: 25%;
+    height: 350px;
+    border: 0.1rem solid #b4b5b5;
+    border-radius: 4px;
+    margin: 65px 2%;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 10%;
+    align-items: center;
+}
+.login-input {
+    width: 100%;
+    margin-top: 15px;
+}
+.login-input label{
+    display:inline-block;
+    width: 30px;
+}
+.login-input input {
+    padding: 10px;
+    border-radius: 3px;
+    border: 2px solid #b4b5b5;
+}
+.login-input input:focus{
+    outline: none;
+}
+#login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+.btn {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+#login-btn {
+    background-color: #71ecfc;
+    padding: 5px;
+    width: 120px;
+    border: none;
+    align-items: center;
+    border-radius: 3px;
+    color: white;
+    font-weight: 900;
+    cursor: pointer;
+}
+#login-btn:hover {
+    background-color: #5994ee;
+}
+.center-border {
+    display: flex;
+    justify-content: space-around;
+    width: 85%;
+    height: 50px;
+    margin-top: 5px;
+}
+#border {
+    width: 120px;
+    height: 25px;
+    border-bottom: 2px solid #b4b5b5;
+}
+.center-border p {
+    font-size: 13px;
+    color: #525555;
+    font-weight: 500;
+}
+#link-join {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+#link-join span {
+    font-size: 13px;
+    font-weight: 500;
+    margin-right: 5px;
+}
+#link-join a {
+    text-decoration: none;
+    color: #5994ee;
+    font-size: 14px;
+}
+.postuser button {
+    width: 17%;
+    cursor: pointer;
+    border-radius: 4px;
+    background: white;
+    border: 1px solid #b4b5b5;
+    color: black;
+    height: 30px;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+.postuser button:hover {
+    background-color: #abeff8;
+    color: white;
+    font-weight: 700;
+}
+.postuser button:focus {
+    outline: none;
 }

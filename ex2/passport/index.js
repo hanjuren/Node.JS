@@ -15,7 +15,16 @@ module.exports = () => {
     // 결과값 done의 user는 req.user로 조회할 수 있다.
     passport.deserializeUser((id, done) => {
         User.findOne({ 
-            where: {id}
+            where: {id},
+            include: [{
+                model: User,
+                attributes: ['id', 'nick'],
+                as: 'Followers',
+            }, {
+                model: User,
+                attributes: ['id', 'nick'],
+                as: 'Followings',
+            }], 
         })
             .then(user => done(null, user))
             .catch(err => done(err));

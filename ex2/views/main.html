@@ -6,14 +6,16 @@
     <div class="postContent">
     {% for post in posts %}
         <div class="post">
-            <input type="hidden" value="{{post.User.id}}" class="post-user-id">
-            <input type="hidden" value="{{post.id}}" class="post-id">
             <div class="postuser">
+                <input type="hidden" value="{{post.User.id}}" class="post-user-id">
+                <input type="hidden" value="{{post.id}}" class="post-id">
                 <span>{{post.User.nick}}</span>
-                {% if user and user.id and post.User.id === user.id %}
-                <a href="#">삭제하기</a >
-                {% elif user and user.id and post.USer.id !== user.id %} 
-                <a href="#">팔로우하기</a >
+                {% if followerIdList.includes(post.User.id) and user and user.id and post.User.id !== user.id %}
+                <button class="post-unfollow">언팔로우하기</button>
+                {% elif not followerIdList.includes(post.User.id) and user and user.id and post.User.id !== user.id %} 
+                <button class="post-follow">팔로우하기</button>
+                {% elif user and user.id and post.User.id === user.id %}
+                <button class="post-delete">삭제하기</button>
                 {% endif %}
             </div>
             <div class="imgbox">
@@ -27,39 +29,74 @@
                 <h3>{{post.title}}</h3>
             </div>
             <div class="commentbox">
-                <span id="comment">댓글보여주기</span>
-                <span id="comment">댓글보여주기</span>
+                <p>{{post.content}}</p>
+                <span id="comment">댓글보기</span>
             </div>
         </div>  
         
     {% endfor %}
     </div>
-    {% if user and user.id %}
-    <div class="profile">
-        <div class="user-profile">
-            <p>{{user.nick}}</p>
-            <a href="#"><i class="fas fa-cog"></i></a>
-        </div>
-        <div class="user-detail">
-            <div class="post-count">
-                <p>My post</p>
-                <sapn>{{postCount}}</sapn>
-            </div>
-            <div class="follow-list">
-                <p>Follower</p>
-                <sapn>0</sapn>
-            </div>
-            <div class="follow-list">
-                <p>Following</p>
-                <sapn>0</sapn>
-            </div>
-        </div> 
-    </div> 
     
-    {% endif %}
 </div>
+{% endblock %}
 
-<script src="https://kit.fontawesome.com/a076d05399.js"></script>   
-
-
+{% block script %}
+    <script>
+        //팔로잉 하기
+        document.querySelectorAll('.post-follow').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+            const myId = document.querySelector('#user-id');
+            if (myId) {
+            const userId = tag.parentNode.querySelector('.post-user-id').value;
+            console.log(userId, myId);
+            if (userId !== myId.value) {
+                axios.post(`/user/${userId}/follow`)
+                    .then(() => {
+                    location.reload();
+                    })
+                    .catch((err) => {
+                    console.error(err);
+                    });
+            }
+            }
+        });
+        });
+        //언팔로우 하기
+        document.querySelectorAll('.post-unfollow').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+            const myId = document.querySelector('#user-id');
+            if (myId) {
+            const userId = tag.parentNode.querySelector('.post-user-id').value;
+            console.log(userId, myId);
+            if (userId !== myId.value) {
+                axios.post(`/user/${userId}/unfollow`)
+                    .then(() => {
+                    location.reload();
+                    })
+                    .catch((err) => {
+                    console.error(err);
+                    }); 
+            }
+            }
+        });
+        });
+        // 게시글 삭제하기
+        document.querySelectorAll('.post-delete').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+            const postId = tag.parentNode.querySelector('.post-id').value;
+            if (postId) {
+                if (confirm('삭제하시겠습니까?')) {
+                axios.delete(`/post/${postId}/delete`)
+                    .then(() => {
+                    location.reload();
+                    })
+                    .catch((err) => {
+                    console.error(err);
+                    });
+            }
+            }
+        });
+        });
+    </script>
+    
 {% endblock %}

@@ -12,6 +12,7 @@ dotenv.config();
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
 
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
@@ -36,7 +37,7 @@ sequelize.sync( { force: false })
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/img', express.static(path.join(__dirname, 'uploads')));
+app.use('/img', express.static(path.join(__dirname, 'uploads/img')));
 app.use(express.json());
 app.use(express.urlencoded( { extended: false } ));
 
@@ -56,6 +57,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/post', postRouter);
+app.use('/user', userRouter);
 
 app.use( (req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

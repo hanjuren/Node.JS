@@ -11,23 +11,70 @@
     <div class="content">
         <div class="title">
             <h1>SNS 만들기</h1>
-            
-            <div class="user">
-                {% if user and user.id %}
-                <a href="/auth/logout" id="log">Logout</a>
-                {%else%}
-                <a href="/auth/login" id="log">Login</a>
-                <a href="#" id="log">Join</a>
-                {%endif%}
-            </div>
-            
         </div>
-        
-        {% block content %}
-        {% endblock %}
-        
-        
+        {% if user and user.id %}
+    <div class="profile">
+        <div class="user-profile">
+            <input id="user-id" type="hidden" value="{{user.id}}">
+            <p>{{user.nick}}</p>
+            <a href="/auth/logout"><i class="fas fa-sign-out-alt"></i></a>
+            <a href="#"><i class="fas fa-cog"></i></a>
+        </div>
+        <div class="user-detail">
+            <div class="post-count">
+                <p>My post</p>
+                <sapn>{{postCount}}</sapn>
+            </div>
+            <div class="follow-list">
+                <p>Follower</p>
+                <sapn>{{followerCount}}</sapn>
+            </div>
+            <div class="follow-list">
+                <p>Following</p>
+                <sapn>{{followingCount}}</sapn>
+            </div>
+        </div> 
+    </div> 
+    {% else %}
+    <div class="loginform">
+        <form id="login-form" action="/auth/login" method="post">
+            <div class="login-input">
+              <label for="uid">ID</label>
+              <input id="uid" type="text" name="uid" required autofocus>
+            </div>
+            <div class="login-input">
+              <label for="password">PW</label>
+              <input id="password" type="password" name="password" required>
+            </div>
+            <div class="btn">
+                <button id="login-btn" type="submit" class="btn">로그인하기</button>
+            </div>
+          </form>
+          <div class="center-border">
+              <div id="border"></div>
+              <p>또는</p>
+              <div id="border"></div>
+          </div>
+          <div id="link-join">
+              <span>계정이 없으신가요?</span>
+              <a id="join" href="/auth/join" class="btn">가입하기</a>
+          </div>
+          
     </div>
-       
+    {% endif %}
+        {% block content %}
+        {% endblock %}  
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        window.onload = () => {
+          if (new URL(location.href).searchParams.get('loginError')) {
+            alert(new URL(location.href).searchParams.get('loginError'));
+          }
+        };
+    </script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    {% block script %}
+    {% endblock %}      
 </body>
 </html>

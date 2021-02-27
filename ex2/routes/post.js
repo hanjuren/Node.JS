@@ -8,16 +8,16 @@ const router = express.Router();
 
 
 try {
-    fs.readdirSync('uploads');
+    fs.readdirSync('uploads/img');
 } catch (error) {
     console.error('uploads 폴더가 없어 uploads 폴더를 생성 합니다.');
-    fs.mkdirSync('uploads');
+    fs.mkdirSync('uploads/img');
 }
 
 const upload = multer({
     storage: multer.diskStorage({
         destination(req, file, cb) {
-            cb(null, 'uploads/');
+            cb(null, 'uploads/img/');
         },
         filename(req, file, cb) {
             const ext = path.extname(file.originalname);
@@ -52,6 +52,24 @@ router.post('/', upload.none(), async(req, res, next) => {
 
 router.get('/', (req, res) => {
     res.render('post', {title: '글쓰기'});
+});
+
+router.delete('/:id/delete', async(req, res, next) => {
+    try {
+        const post = await Post.findOne({ where: { id: req.params.id } });
+        if(post) {
+            await Post.destroy({
+                where: { id: req.params.id } 
+            });
+        }
+        res.send('succes');
+        if(post.img){
+            fs.unlinkSync(`./uploads${post.img}`);
+        }
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
 });
 
 module.exports = router;
