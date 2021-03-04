@@ -41,6 +41,23 @@ router.get('/', async(req, res, next) => {
     }
 });
 
+router.get('/profile', async(req, res, next) =>{
+    try {
+        const posts = await Post.findAll({
+            where: {UserId: req.user.id},
+            include: {
+                model: User,
+                attributes: ['id', 'nick'],
+            },
+            order: [['id', 'DESC']],
+        });
+        console.log(posts);
+        res.render('profile', { title: '프로필 페이지', posts });
+    } catch(error) {
+        console.log(error);
+        next(error);
+    }
+});
 
 
 module.exports = router;
