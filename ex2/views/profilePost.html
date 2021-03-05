@@ -1,0 +1,21 @@
+{% extends 'profilelayout.html' %}
+
+{% block content %}
+
+<div class="profile-post">
+    <div class="user-post-box">
+        {% for post in posts %}
+            <div class="post-box" id="{{post.id}}">
+                <input type="hidden" value="{{post.User.id}}" class="post-user-id">
+                <input type="hidden" value="{{post.id}}" class="post-id">
+                <div id="post-user">{{post.User.nick}}</div>
+                <img src="{{post.img}}"/>
+                <div id="post-title">{{post.title}}</div>
+                <div class="post-content">{{post.content}}</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

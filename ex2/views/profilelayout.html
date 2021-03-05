@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/main.css">
+    <title>{{title}}</title>
+</head>
+<body>
+    <div class="content">
+
+        <div class="profile-title">
+            <h1>JuryeonStargram</h1>
+        </div>
+
+        <div class="profile-box">
+            <div class="user-nick">
+                <p>{{user.nick}}</p>
+            </div>
+            <div class="profile-content">
+                <p>게시물 <span>{{postCount}}</span></p>
+                <p>팔로워 <span>{{followerCount}}</span> </p>
+                <p>팔로잉 <span>{{followingCount}}</span></p>
+            </div>
+        </div>
+        <div class="post-type">
+            <div class="post-typebox">
+                <a href="/profile"><i class="fas fa-th"></i></a>
+                <a href="/profile/post"><i class="fas fa-clone"></i></a>
+            </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+
+        <div class="bottom"></div>
+
+    </div>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

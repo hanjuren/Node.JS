@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 const Post = require('../models/post');
+const Comment = require('../models/comment');
 const router = express.Router();
 
 
@@ -52,6 +53,21 @@ router.post('/', upload.none(), async(req, res, next) => {
 
 router.get('/', (req, res) => {
     res.render('post', {title: '글쓰기'});
+});
+
+router.post('/comment/:id', async(req, res, next) => {
+    try {
+        const comment = await Comment.create({
+            comment: req.body.comment,
+            PostId: req.params.id,
+            UserId: req.user.id,
+        });
+        console.log(comment);
+        res.redirect(`/#${req.params.id}`);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
 });
 
 router.delete('/:id/delete', async(req, res, next) => {
