@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="mainContent">
-
+    
     <div class="postContent">
     {% for post in posts %}
         <div class="post">
@@ -30,24 +30,32 @@
             </div>
             <div class="commentbox">
                 <p>{{post.content}}</p>
-                <form id="comment-form" action="/post/comment/{{post.id}}" method="post">
-                    <textarea id="comment" name="comment"></textarea>
-                    <button id="twit-btn" type="submit" class="btn">짹짹</button>
-                </form>
+                <button type="button" id="modal-open" value="{{post.id}}">댓글 모두보기</button>
                 {% for comment in post.Comments %}
-                    <span id="comment">
-                        {{comment.User.nick}}
-                        {{comment.comment}}
-                    </span>
+                <span id="comments">
+                    {{comment.User.nick}}
+                    {{comment.comment}}
+                </span>
                 {% endfor %}
-                <a>댓글더보기</a>
             </div>
-        </div>  
-        
+            <form id="comment-form" action="/post/comment/{{post.id}}" method="post">
+                <i class="far fa-grin-squint"></i>
+                <textarea id="comment" name="comment" placeholder="댓글 달기..." cols="20" rows="5"></textarea>
+                <button id="comment-btn" type="submit" class="btn">게시</button>
+            </form>
+        </div>
     {% endfor %}
+        <div id="modal">
+            <div class="modal_content">
+                
+            </div>
+            
+            <div class="modal_layer" id="modal_close_btn">
+            </div>
+        </div>
     </div>
-    
 </div>
+
 {% endblock %}
 
 {% block script %}
@@ -107,6 +115,37 @@
             }
         });
         });
+
+        document.querySelectorAll('#modal-open').forEach(function(tag) {
+            tag.addEventListener('click', async function() {
+                const postId = tag.parentNode.querySelector('#modal-open').value;
+                console.log(postId);
+                if(postId){
+                    try {
+                            const res = await axios.get(`/post/${postId}`);
+                            const post = res.data;
+                            console.log(post);
+                            const modal = document.querySelector('.modal_content');
+                            const img = document.createElement('img');
+                            img.src = post.img;
+                            img.id = "post-img"
+                            modal.appendChild(img);
+                        } catch(error){
+                            console.log(error);
+                        };
+                }
+                document.getElementById("modal").style.display="block";
+
+            });
+        });
+        
+        document.getElementById("modal_close_btn").onclick = function() {
+            document.getElementById("modal").style.display="none";
+            const modal = document.querySelector('.modal_content');
+            const img = document.querySelector('#post-img');
+            modal.removeChild(img);
+
+        }
     </script>
     
 {% endblock %}

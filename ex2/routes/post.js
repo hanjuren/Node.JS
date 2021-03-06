@@ -88,4 +88,15 @@ router.delete('/:id/delete', async(req, res, next) => {
     }
 });
 
+router.get('/:id', async (req, res, next) => {
+    try {
+        const post = await Post.findOne({ where: { id: req.params.id } });
+        res.json(post);
+        console.log(post);
+    } catch(error){
+        console.log(error);
+        next(error);
+    }
+});
+
 module.exports = router;
