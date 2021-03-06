@@ -32,9 +32,11 @@
                 <p>{{post.content}}</p>
                 <button type="button" id="modal-open" value="{{post.id}}">댓글 모두보기</button>
                 {% for comment in post.Comments %}
+                {% if loop.index <= 3 %}
                 <span id="comments">
                     {{comment.User.nick}}
                     {{comment.comment}}
+                {% endif %}     
                 </span>
                 {% endfor %}
             </div>
@@ -46,10 +48,8 @@
         </div>
     {% endfor %}
         <div id="modal">
-            <div class="modal_content">
-                
+            <div class="modal_content">   
             </div>
-            
             <div class="modal_layer" id="modal_close_btn">
             </div>
         </div>
@@ -60,6 +60,74 @@
 
 {% block script %}
     <script>
+        document.querySelectorAll('#modal-open').forEach(function(tag) {
+            tag.addEventListener('click', async function() {
+                const postId = tag.parentNode.querySelector('#modal-open').value;
+                
+                if(postId){
+                    try {
+                            const res = await axios.get(`/post/${postId}`);
+                            const post = res.data;
+                            
+                            const modal = document.querySelector('.modal_content');
+                            const commentDiv = document.createElement('div');
+                            commentDiv.id = "commentDiv";
+                            const comment = document.createElement('div');
+                            comment.id = "comment-div";
+
+                            const img = document.createElement('img');
+                            img.src = post.img;
+                            img.id = "post-img";
+                            modal.appendChild(img);
+
+                            const postInfo = document.createElement('div');
+                            postInfo.id = "post-info";
+                            const postTitle = document.createElement('p');
+                            postTitle.innerHTML = post.title;
+                            postInfo.append(postTitle);
+                            const content = document.createElement('p');
+                            content.id = "post-Content";
+                            content.innerHTML = post.content;
+                            postInfo.appendChild(content);
+                            commentDiv.appendChild(postInfo);
+
+                            for( let i=0; i<post.Comments.length; i++){
+                                let divcomment = document.createElement('div');
+                                divcomment.id = "comment-box";
+                                let postnick = document.createElement('p');
+                                postnick.id = "post-nick";
+                                postnick.innerHTML = post.User.nick;
+                                divcomment.appendChild(postnick);
+                                let p = document.createElement('p');
+                                p.innerHTML = post.Comments[i].comment;
+                                console.log(i);
+                                divcomment.appendChild(p);
+                                comment.appendChild(divcomment);
+                            };
+                            commentDiv.appendChild(comment);
+                            modal.appendChild(commentDiv);
+                            //smodal.appendChild(commentDiv);
+                            console.log(post.Comments);
+                        } catch(error){
+                            console.log(error);
+                        };
+                }
+                document.getElementById("modal").style.display="block";
+                document.querySelector("body").style.overflow="hidden";
+
+            });
+        });
+        
+        document.getElementById("modal_close_btn").onclick = function() {
+            document.getElementById("modal").style.display="none";
+            document.querySelector("body").style.overflow="scroll";
+            const modal = document.querySelector('.modal_content');
+            const img = document.querySelector('#post-img');
+            const commentDiv = document.querySelector("#commentDiv");
+            modal.removeChild(commentDiv);
+            modal.removeChild(img);
+
+        }
         //팔로잉 하기
         document.querySelectorAll('.post-follow').forEach(function(tag) {
         tag.addEventListener('click', function() {
@@ -116,36 +184,7 @@
         });
         });
 
-        document.querySelectorAll('#modal-open').forEach(function(tag) {
-            tag.addEventListener('click', async function() {
-                const postId = tag.parentNode.querySelector('#modal-open').value;
-                console.log(postId);
-                if(postId){
-                    try {
-                            const res = await axios.get(`/post/${postId}`);
-                            const post = res.data;
-                            console.log(post);
-                            const modal = document.querySelector('.modal_content');
-                            const img = document.createElement('img');
-                            img.src = post.img;
-                            img.id = "post-img"
-                            modal.appendChild(img);
-                        } catch(error){
-                            console.log(error);
-                        };
-                }
-                document.getElementById("modal").style.display="block";
-
-            });
-        });
         
-        document.getElementById("modal_close_btn").onclick = function() {
-            document.getElementById("modal").style.display="none";
-            const modal = document.querySelector('.modal_content');
-            const img = document.querySelector('#post-img');
-            modal.removeChild(img);
-
-        }
     </script>
     
 {% endblock %}

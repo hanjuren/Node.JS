@@ -40,7 +40,7 @@ router.post('/todo', async (req, res, next) => {
             content: content,
             UserId: req.user.id,
         });
-        res.redirect('/');
+        res.redirect('/todo');
     } catch (error) {
         console.error(error);
         next(error);
@@ -54,7 +54,7 @@ router.get('/success/:id', async(req, res, next) => {
         }, {
             where: {id: req.params.id},
         });
-        res.redirect('/');
+        res.redirect('/todo');
     } catch(error) {
         console.error(error);
         next(error);
@@ -64,7 +64,7 @@ router.get('/success/:id', async(req, res, next) => {
 router.get('/delete/:id', async(req, res, next) => {
     try {
         await Todo.destroy({ where: { id: req.params.id } });
-        res.redirect('/');
+        res.redirect('/todo');
     } catch(error) {
         console.error(error);
         next(error);

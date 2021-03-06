@@ -5,6 +5,7 @@ const fs = require('fs');
 
 const Post = require('../models/post');
 const Comment = require('../models/comment');
+const User = require('../models/user');
 const router = express.Router();
 
 
@@ -90,7 +91,23 @@ router.delete('/:id/delete', async(req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const post = await Post.findOne({ where: { id: req.params.id } });
+        const post = await Post.findOne({ 
+            where: { id: req.params.id },
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'nick'],   
+                },
+                {
+                    model: Comment,
+                    attributes: ['comment'],
+                    include: {
+                        model: User,
+                        attributes: ['id', 'nick'],
+                    },   
+                }, 
+            ],
+        });
         res.json(post);
         console.log(post);
     } catch(error){
