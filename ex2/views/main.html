@@ -60,6 +60,7 @@
 
 {% block script %}
     <script>
+
         document.querySelectorAll('#modal-open').forEach(function(tag) {
             tag.addEventListener('click', async function() {
                 const postId = tag.parentNode.querySelector('#modal-open').value;
@@ -68,7 +69,7 @@
                     try {
                             const res = await axios.get(`/post/${postId}`);
                             const post = res.data;
-                            
+
                             const modal = document.querySelector('.modal_content');
                             const commentDiv = document.createElement('div');
                             commentDiv.id = "commentDiv";
@@ -92,6 +93,8 @@
                             commentDiv.appendChild(postInfo);
 
                             for( let i=0; i<post.Comments.length; i++){
+
+                                console.log(post.Comments[i].LargeComments.length);
                                 let divcomment = document.createElement('div');
                                 divcomment.id = "comment-box";
                                 let postnick = document.createElement('p');
@@ -100,14 +103,55 @@
                                 divcomment.appendChild(postnick);
                                 let p = document.createElement('p');
                                 p.innerHTML = post.Comments[i].comment;
-                                console.log(i);
+                                
                                 divcomment.appendChild(p);
+                                let largeComment = document.createElement('button');
+                                largeComment.innerHTML = "댓글 달기";
+                                largeComment.id = "largeComment";
+                                largeComment.value = `${post.Comments[i].id}`;
+                                divcomment.appendChild(largeComment);
+                                largeComment.addEventListener("click", function(){
+                                    console.log(post.Comments[i].id);
+                                    input.focus();
+                                    commentForm.action = `/post/largecomment/${post.Comments[i].id}`;
+                                });
+                                //largeComment.href = `/post/largecomment/${post.Comments[i].id}`;
                                 comment.appendChild(divcomment);
+
+                                if(post.Comments[i].LargeComments.length !== 0 ){
+                                    let more = document.createElement('a');
+                                    more.innerHTML = "댓글 더보기";
+                                    more.addEventListener("click", function(){
+                                        let div = document.createElement('div');
+                                        for( let g=0; g<post.Comments[i].LargeComments.length; g++){
+                                            console.log("대댓글 수", g);
+                                            console.log(post.Comments[i].LargeComments.comment);
+                                            
+                                            let large = document.createElement('p');
+                                            large.innerHTML = post.Comments[i].LargeComments[g].comment;
+                                            div.appendChild(large);
+                                        };
+                                        more.appendChild(div);
+                                    });
+                                    comment.appendChild(more);
+                                }
+                                
+                                
                             };
                             commentDiv.appendChild(comment);
-                            modal.appendChild(commentDiv);
                             //smodal.appendChild(commentDiv);
-                            console.log(post.Comments);
+                            const commentForm = document.createElement("form");
+                            commentForm.method = "post";
+                            commentForm.action = `/post/comment/${post.id}`;
+                            const input = document.createElement('input');
+                            input.id = "cmt";
+                            input.placeholder = "댓글 달기...";
+                            input.name = "comment";
+                            commentForm.appendChild(input);
+                            commentDiv.appendChild(commentForm);
+                            
+                            modal.appendChild(commentDiv);
+                            
                         } catch(error){
                             console.log(error);
                         };
@@ -124,6 +168,7 @@
             const modal = document.querySelector('.modal_content');
             const img = document.querySelector('#post-img');
             const commentDiv = document.querySelector("#commentDiv");
+            const largeComment = document.querySelector("#largeComment");
             modal.removeChild(commentDiv);
             modal.removeChild(img);
 

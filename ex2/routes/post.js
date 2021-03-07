@@ -6,6 +6,7 @@ const fs = require('fs');
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 const User = require('../models/user');
+const LargeComment = require('../models/largeComment');
 const router = express.Router();
 
 
@@ -71,6 +72,21 @@ router.post('/comment/:id', async(req, res, next) => {
     }
 });
 
+router.post('/largecomment/:id', async(req, res, next) => {
+    try {
+        const largeComment = await LargeComment.create({
+            comment: req.body.comment,
+            UserId: req.user.id,
+            CommentId: req.params.id,
+        });
+        console.log("대댓글 :", largeComment);
+        res.redirect('/');
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+
 router.delete('/:id/delete', async(req, res, next) => {
     try {
         const post = await Post.findOne({ where: { id: req.params.id } });
@@ -100,11 +116,14 @@ router.get('/:id', async (req, res, next) => {
                 },
                 {
                     model: Comment,
-                    attributes: ['comment'],
-                    include: {
+                    attributes: ['comment', 'id'],
+                    include: [{
                         model: User,
                         attributes: ['id', 'nick'],
-                    },   
+                    }, {
+                        model: LargeComment,
+                        attributes: ['comment'],
+                    }],   
                 }, 
             ],
         });

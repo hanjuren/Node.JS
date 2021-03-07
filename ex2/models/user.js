@@ -41,5 +41,6 @@ module.exports = class User extends Sequelize.Model{
             through: 'Follow',
         });
         db.User.hasMany(db.Comment);
+        db.User.hasMany(db.LargeComment);
     }
 };

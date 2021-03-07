@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports = class Comment extends Sequelize.Model{
+module.exports = class LargeComment extends Sequelize.Model{
     static init(sequelize){
         return super.init({
             comment: {
@@ -11,16 +11,15 @@ module.exports = class Comment extends Sequelize.Model{
             sequelize,
             timestamps: true,
             underscored: false,
-            modelName: "Comment",
-            tableName: "comments",
+            modelName: "LargeComment",
+            tableName: "largecomments",
             paranoid: false,
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
     static associate(db) {
-       db.Comment.belongsTo(db.Post);
-       db.Comment.belongsTo(db.User);
-       db.Comment.hasMany(db.LargeComment);
+       db.LargeComment.belongsTo(db.User);
+       db.LargeComment.belongsTo(db.Comment);
     }
 }
