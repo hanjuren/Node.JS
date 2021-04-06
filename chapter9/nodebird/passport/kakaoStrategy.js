@@ -8,7 +8,12 @@ module.exports = () => {
         clientID: process.env.KAKAO_ID, // 카카오에서 발급받을 ID
         callbackURL: '/auth/kakao/callback', // 카카오로부터 인증결과를 받을 라우터 주소
     }, async (accessToken, refreshRoken, profile, done) => {  // 카카오에서 인증 후 Token 과 profile을 보내준다.
-        console.log('kakao profile', profile);
+        //console.log('kakao profile', profile);
+        process.env.KAKAOACCESS= accessToken;
+        console.log("엑세스 토근")
+        console.log(process.env.KAKAOACCESS);
+        console.log(accessToken);
+        
         try {
             const exUser = await User.findOne({     // 기존의 User가 있는지 조회
                 where: { snsId: profile.id, provider: 'kakao' },
@@ -22,7 +27,7 @@ module.exports = () => {
                     snsId: profile.id,
                     provider: 'kakao',
                 });
-                done(null, newUser); // 사용자 생성 후 done함수 호출
+                done(null, exUser); // 사용자 생성 후 done함수 호출
             }
         } catch (error) {
             console.log(error);

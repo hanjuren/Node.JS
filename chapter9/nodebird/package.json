@@ -9,6 +9,7 @@
   "author": "HanJuRyeon",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
@@ -22,6 +23,8 @@
     "passport-kakao": "^1.0.0",
     "passport-local": "^1.0.0",
     "passport-naver": "^1.0.6",
+    "querystring": "^0.2.1",
+    "request": "^2.88.2",
     "sequelize": "^6.3.5",
     "sequelize-cli": "^6.2.0"
   },

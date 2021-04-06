@@ -3,8 +3,49 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const User = require('../models/user');
+const axios = require('axios');
+
+const request = require('request');
+
 
 const router = express.Router();
+
+router.get('/message', (req, res) => {
+    
+    let template_objectObj = {
+            object_type: 'text',
+            text: ' 이번달 전기 사용량 안내입니다.',
+            'link': {
+            web_url: 'https://stackoverflow.com/questions/31186241/node-js-request-invalid-uri',
+            mobile_web_url: 'https://stackoverflow.com/questions/31186241/node-js-request-invalid-uri'
+            }
+        };
+         
+        // Javascript -> JSON 타입으로 변경
+        let template_objectStr = JSON.stringify(template_objectObj);
+        let options = {
+            url: 'https://kapi.kakao.com/v2/api/talk/memo/default/send',
+            method: 'POST',
+         
+            headers: {
+                'Authorization': 'Bearer ' + process.env.KAKAOACCESS,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            form: {
+                template_object: template_objectStr,
+            }
+        };
+         
+        function callback(error, response, body) {
+            console.log(response.statusCode);
+                if (!error && response.statusCode == 200) {
+                    console.log(body);
+                }
+        }
+        request(options, callback);
+        
+    
+});
 
 router.post('/join', isNotLoggedIn, async(req, res, next) => {
     const { email, nick, password } = req.body;
@@ -61,6 +102,7 @@ router.get('/kakao', passport.authenticate('kakao'));
 router.get('/kakao/callback', passport.authenticate('kakao', {
     failureRedirect: '/',
 }), (req, res) => {
+    
     res.redirect('/')
 });
 

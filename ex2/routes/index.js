@@ -80,7 +80,7 @@ router.get('/profile/post', async(req, res, next) => {
             },
             order: [['id', 'DESC']],
         });
-        res.render('profilePost', { title: '프로필 페이지', posts });
+        res.render('profile', { title: '프로필 페이지', posts });
     } catch (error){
         console.log(error);
         next(error);
