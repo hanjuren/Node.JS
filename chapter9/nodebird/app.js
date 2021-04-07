@@ -47,6 +47,7 @@ app.use(session({
         httpOnly: true,
         secure: false,
     },
+    
 }));
 app.use(passport.initialize()); //passport
 app.use(passport.session()); // passport

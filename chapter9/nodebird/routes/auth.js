@@ -11,7 +11,6 @@ const request = require('request');
 const router = express.Router();
 
 router.get('/message', (req, res) => {
-    
     let template_objectObj = {
             object_type: 'text',
             text: ' 이번달 전기 사용량 안내입니다.',
@@ -28,7 +27,7 @@ router.get('/message', (req, res) => {
             method: 'POST',
          
             headers: {
-                'Authorization': 'Bearer ' + process.env.KAKAOACCESS,
+                'Authorization': 'Bearer ' + req.session.token,
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             form: {
@@ -40,9 +39,14 @@ router.get('/message', (req, res) => {
             console.log(response.statusCode);
                 if (!error && response.statusCode == 200) {
                     console.log(body);
+                    res.send('success');
+                } else {
+                    res.send('fail');
                 }
         }
         request(options, callback);
+
+
         
     
 });
@@ -102,8 +106,9 @@ router.get('/kakao', passport.authenticate('kakao'));
 router.get('/kakao/callback', passport.authenticate('kakao', {
     failureRedirect: '/',
 }), (req, res) => {
-    
-    res.redirect('/')
+    req.session.token = req.authInfo.accessToken;
+    req.session.save();
+    res.redirect('/');
 });
 
 router.get('/naver', passport.authenticate('naver'));
@@ -111,6 +116,7 @@ router.get('/naver', passport.authenticate('naver'));
 router.get('/naver/callback', passport.authenticate('naver', {
     failureRedirect: '/',
 }), (req, res) => {
+    
     res.redirect('/')
 });
 
